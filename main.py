@@ -31,7 +31,7 @@ def signup_process():
 def login_page():
     return render_template("login.html")
 
-@app.route("/LogIn", methods=['GET','POST'])
+@app.route("/LogIn", methods=['POST'])
 def login_process():
     email = request.form.get("name")
     password = request.form.get("password")
