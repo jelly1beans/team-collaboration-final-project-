@@ -27,15 +27,21 @@ def signup_process():
 
     return redirect(url_for("home_page"))
 
-@app.route("/LogIn", methods=['POST'])
+@app.route("/Login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/LogIn", methods=['GET','POST'])
 def login_process():
-    # email = request.form.get("name")
-    # password = request.form.get("password")
+    email = request.form.get("name")
+    password = request.form.get("password")
     
-    # sql="SELECT * FROM registration WHERE PWDs_name=%s AND PWDs_password=%s"
-    # cursor.execute(sql, (email, password))
+    sql="SELECT * FROM registration WHERE PWDs_name=%s AND PWDs_password=%s"
+    cursor.execute(sql, (email, password))
     
     connection.commit()
+
+    return redirect(url_for("home_page"))
 
 @app.route("/Home")
 def home_page():
