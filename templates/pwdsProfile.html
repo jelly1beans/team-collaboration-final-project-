@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e8f5e9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .profile-container {
+      max-width: 450px;
+      margin: auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 128, 0, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+    }
+
+    .profile-photo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-photo img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #66bb6a;
+    }
+
+    .profile-photo input {
+      margin-top: 10px;
+    }
+
+    .profile-info p {
+      font-size: 16px;
+      color: #388e3c;
+      margin: 8px 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #a5d6a7;
+      border-radius: 6px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .add-contact {
+      background-color: #43a047;
+      color: white;
+    }
+
+    .add-contact:hover {
+      background-color: #388e3c;
+    }
+
+    .delete-account {
+      background-color: #e53935;
+      color: white;
+    }
+
+    .delete-account:hover {
+      background-color: #c62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-container">
+    <h2>User Profile</h2>
+
+    <div class="profile-photo">
+      <img id="profileImage" src="https://via.placeholder.com/120" alt="Profile Photo">
+      <input type="file" accept="image/*" onchange="changePhoto(event)">
+    </div>
+
+    <div class="profile-info">
+      <p><strong>Name:</strong> Jerbeth</p>
+      <p><strong>Email:</strong> jerbeth@example.com</p>
+    </div>
+
+    <form id="contactForm">
+      <label for="contactName">Add Contact Name:</label>
+      <input type="text" id="contactName" name="contactName" required>
+
+      <label for="contactEmail">Contact Email:</label>
+      <input type="email" id="contactEmail" name="contactEmail" required>
+
+      <button type="submit" class="btn add-contact">Add Contact</button>
+    </form>
+
+    <button class="btn delete-account" onclick="deleteAccount()">Delete Account</button>
+  </div>
+
+  <script>
+    function changePhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('profileImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('contactName').value;
+      const email = document.getElementById('contactEmail').value;
+      alert(`✅ Contact added:\nName: ${name}\nEmail: ${email}`);
+      this.reset();
+    });
+
+    function deleteAccount() {
+      if (confirm("⚠️ Are you sure you want to delete your account?")) {
+        alert("❌ Account deleted (simulated).");
+        // Add backend logic here if needed
+      }
+    }
+  </script>
+
+</body>
+</html>
