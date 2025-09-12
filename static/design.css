@@ -160,6 +160,9 @@ input[type="text"] {
 input[type="password"] {
   text-indent: 15px;
 }
+input[type="email"] {
+  text-indent: 15px;
+}
 .signup_btn{
     text-align: center;
     width: 100px;

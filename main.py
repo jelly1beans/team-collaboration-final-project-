@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,flash
 import pymysql
 app = Flask (__name__)
+app.secret_key = 'your_secret_key'
 
 connection = pymysql.connect(
     host = "localhost",
@@ -21,7 +22,7 @@ def signup_process():
     email = request.form.get("email")
     password = request.form.get("password")
     
-    sql="INSERT INTO registration (PWDs_name, PWDs_email, PWDs_password) VALUES(%s, %s, %s)"
+    sql="INSERT INTO pwdsusers (PWDs_name, PWDs_email, PWDs_password) VALUES(%s, %s, %s)"
     cursor.execute(sql, (name, email, password))  
     connection.commit()
 
@@ -30,6 +31,48 @@ def signup_process():
 @app.route("/Login")
 def login_page():
     return render_template("login.html")
+
+@app.route('/LogIn', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+
+    cursor.execute("SELECT * FROM pwdsusers WHERE PWDs_email = %s", (email,))
+    user = cursor.fetchone()
+
+    if not user:
+        flash("Email not found.")
+        return redirect(url_for('login_page'))
+    elif user['PWDs_password'] != password:
+        flash("Incorrect password.")
+        return redirect(url_for('login_page'))
+    else:
+        flash("Login successful!")
+        return redirect(url_for('home_page'))
+    
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        new_password = request.form['new_password']
+
+        cursor.execute("SELECT * FROM pwdsusers WHERE PWDs_email = %s", (email,))
+        user = cursor.fetchone()
+
+        if user:
+            cursor.execute("UPDATE pwdsusers SET PWDs_password = %s WHERE PWDs_email = %s", (new_password, email))
+            connection.commit()
+            flash("Password updated successfully.")
+            return redirect(url_for('home_page'))
+        else:
+            flash("Email not found.")
+            return redirect(url_for('forgot_password'))
+
+    return render_template('forgot_password.html')
+
+@app.route("/UserProfile")
+def profile_page():
+    return render_template("pwdsProfile.html")
 
 @app.route("/Home")
 def home_page():
