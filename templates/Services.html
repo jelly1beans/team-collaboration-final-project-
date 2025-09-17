@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Services Dropdown</title>
-  <link rel="stylesheet" href="../static/style1.css">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'style1.css')}}">
 </head>
 <body>
 
   <nav>
     <ul>
-      <li><a href="#">Home</a></li>
+      <li><a href="{{ url_for('home_page') }}">Home</a></li>
       <li>
-        <a href="#">Service ▾</a>
+        <a href="{{ url_for('service_page') }}">Service ▾</a>
         <ul>
-          <li><a href="../pages/nearsighted.html">Nearsightedness</a></li>
-          <li><a href="../pages/farsighted.html">Farsightedness</a></li>
-          <li><a href="../pages/astigmatism.html">Astigmatism</a></li>
-          <li><a href="../pages/Presbyopia.html">Presbyopia</a></li>
-          <li><a href="../pages/Cataracts.html">Cataract</a></li>
+          <li><a href="{{url_for('nearsighted_page')}}">Nearsightedness</a></li>
+          <li><a href="{{ url_for('farsighted_page') }}">Farsightedness</a></li>
+          <li><a href="{{ url_for('astigmatism_page') }}">Astigmatism</a></li>
+          <li><a href="{{ url_for('presbyopia_page') }}">Presbyopia</a></li>
+          <li><a href="{{ url_for('cataracts_page') }}">Cataract</a></li>
         </ul>
       </li>
       <li><a href="#">About</a></li>
@@ -30,7 +30,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Services Section</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'style1.css')}}">
 </head>
 <body>
 
