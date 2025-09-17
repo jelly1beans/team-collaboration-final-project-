@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services Dropdown</title>
+  <link rel="stylesheet" href="../static/style1.css">
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li>
+        <a href="#">Service ▾</a>
+        <ul>
+          <li><a href="../pages/nearsighted.html">Nearsightedness</a></li>
+          <li><a href="../pages/farsighted.html">Farsightedness</a></li>
+          <li><a href="../pages/astigmatism.html">Astigmatism</a></li>
+          <li><a href="../pages/Presbyopia.html">Presbyopia</a></li>
+          <li><a href="../pages/Cataracts.html">Cataract</a></li>
+        </ul>
+      </li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services Section</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section class="services-intro">
+    <p class="subtitle">The New Standard of Eyecare</p>
+    <h2 class="title">Your Eyes Deserve the Best</h2>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <h3>Globally trained, expert doctors</h3>
+        <p>
+          Our doctors are globally trained and locally respected in the eye industry with 
+          decades of experience in providing life-changing vision.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <h3>State of the art technology</h3>
+        <p>
+          We invest in state-of-the-art technology so that our treatments are safe and quick. 
+          That means more time to do what you love, now with clearer vision.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <h3>Treatment that's personalized to you</h3>
+        <p>
+          We know everyone’s needs are unique. That’s why we take a personalized approach 
+          to eye care, where your treatment plan is customized for you.
+        </p>
+      </div>
+    </div>
+    <section class="conditions">
+  <h2>What we Treat</h2>
+  <p>Take a closer look at the list of concerns and conditions that we address.</p>
+  
+  <div class="condition-cards">
+    <!-- Nearsightedness -->
+    <div class="condition-card">
+      <h3>Nearsightedness</h3>
+      <p class="icon">👁</p>
+      <a href="#" onclick="openModal('nearsighted')">Learn More</a>
+    </div>
+
+    <!-- Farsightedness -->
+    <div class="condition-card">
+      <h3>Farsightedness</h3>
+      <p class="icon">👁</p>
+      <a href="#" onclick="openModal('farsighted')">Learn More</a>
+    </div>
+
+    <!-- Astigmatism -->
+    <div class="condition-card">
+      <h3>Astigmatism</h3>
+      <p class="icon">👁</p>
+      <a href="#" onclick="openModal('astigmatism')">Learn More</a>
+    </div>
+
+    <!-- Presbyopia -->
+    <div class="condition-card">
+      <h3>Presbyopia</h3>
+      <p class="icon">👁</p>
+      <a href="#" onclick="openModal('presbyopia')">Learn More</a>
+    </div>
+
+    <!-- Cataracts -->
+    <div class="condition-card">
+      <h3>Cataracts</h3>
+      <p class="icon">👁</p>
+      <a href="#" onclick="openModal('cataract')">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- 🔹 Modals with Definitions -->
+<div id="nearsighted" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('nearsighted')">&times;</span>
+    <h2>Nearsightedness (Myopia)</h2>
+    <p>Nearsightedness is when close objects appear clear, but distant objects look blurry. 
+       It occurs when the eye’s shape causes light rays to bend incorrectly, focusing in front of the retina.</p>
+  </div>
+</div>
+
+<div id="farsighted" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('farsighted')">&times;</span>
+    <h2>Farsightedness (Hyperopia)</h2>
+    <p>Farsightedness is when distant objects may be seen more clearly than nearby ones. 
+       It occurs when light focuses behind the retina instead of on it.</p>
+  </div>
+</div>
+
+<div id="astigmatism" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('astigmatism')">&times;</span>
+    <h2>Astigmatism</h2>
+    <p>Astigmatism happens when the cornea or lens is irregularly shaped, causing blurred or distorted vision.</p>
+  </div>
+</div>
+
+<div id="presbyopia" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('presbyopia')">&times;</span>
+    <h2>Presbyopia</h2>
+    <p>Presbyopia is an age-related condition where the eye gradually loses the ability to focus on nearby objects.</p>
+  </div>
+</div>
+
+<div id="cataract" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('cataract')">&times;</span>
+    <h2>Cataracts</h2>
+    <p>Cataracts occur when the eye’s lens becomes cloudy, leading to blurry vision and, if untreated, vision loss.</p>
+    <script>
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+</script>
+
+  </div>
+</div>
+
+  </section>
+  </nav>
+
+</body>
+</html>
