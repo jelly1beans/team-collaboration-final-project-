@@ -70,9 +70,9 @@ def forgot_password():
 
     return render_template('forgot_password.html')
 
-@app.route("/UserProfile")
+@app.route("/Profile")
 def profile_page():
-    return render_template("pwdsProfile.html")
+    return render_template("profile.html")
 
 @app.route("/Home")
 def home_page():

@@ -1,0 +1,195 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  background: #0d6238;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav ul li {
+  position: relative;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+}
+
+nav ul li:hover {
+  background: #0d6238;
+}
+
+/* Dropdown */
+nav ul li ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #0d6238;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 200px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+nav ul li:hover ul {
+  display: block;
+}
+
+nav ul li ul li a {
+  padding: 10px;
+  color: #ecf0f1;
+}
+
+nav ul li ul li a:hover {
+  background: #1abc9c;
+}
+
+/* Services Intro Section */
+.services-intro {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f8f8;
+  color: #2c3e50;
+}
+
+.services-intro .subtitle {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #0d6238;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.services-intro .title {
+  font-size: 36px;
+  margin-bottom: 40px;
+  font-weight: 600;
+  color: #0d6238;
+}
+
+/* Grid Layout */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Service Cards */
+.service-card {
+  text-align: left;
+  padding: 20px;
+  border-left: 3px solid #0d6238;
+}
+
+.service-card h3 {
+  font-size: 20px;
+  color: #0d6238;
+  margin-bottom: 15px;
+}
+
+.service-card p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #0d6238;
+}
+
+/* Section Styling */
+.conditions {
+  text-align: center;
+  padding: 40px;
+  color: #0d6238;
+}
+
+.condition-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.condition-card {
+  background: #0d6238;
+  padding: 30px;
+  width: 250px;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.condition-card:hover {
+  transform: scale(1.05);
+}
+
+.condition-card h3 {
+  font-size: 1.4rem;
+  color: #fcfdff;
+}
+
+.condition-card .icon {
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+.condition-card a {
+  text-decoration: none;
+  color: #fcfdff;
+  font-weight: bold;
+}
+
+/* 🔹 Modal Styling (reusable) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 90%;
+  text-align: left;
+  color: #0d6238;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+

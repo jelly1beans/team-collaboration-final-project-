@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{{url_for('static', filename = 'pstyle.css')}}">
+</head>
+<body>
+  <header>
+    <div class="main">
+        <div class="navbar">
+            <div class="icon">
+                <h2 class="logo">DHMS</h2>
+            </div>
+
+            <div class="menu">
+                <ul>
+                    <li><a href="{{url_for('home_page')}}" title="home">HOME</a></li>
+                    <li><a href="#" title="services">SERVICE</a></li>
+                    <li><a href="{{url_for('landing_page')}}" title="logout">LOGOUT</a></li>
+                </ul>
+            </div>
+        </div>
+
+      
+        <div class="profile-container">
+          <div class="profile-card">
+            <h2>User Profile</h2>
+            
+            <div class="profile-image">
+      <img src="https://via.placeholder.com/120" alt="Profile Photo" id="profileImg">
+      <input type="file" id="fileInput" style="display:none;">
+    </div>
+
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" value="Jerbeth" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" value="jerbeth@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="contactName">Contacts:</label>
+        <input type="text" id="contactName" placeholder="Enter contact name">
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail">Contact Number:</label>
+        <input type="email" id="contactNumber" placeholder="Enter contact number">
+      </div>
+              <div class="button-group">
+                <button type="submit" class="btn save-btn">Save</button>
+                <button type="button" id="addContactBtn" class="btn add-contact-btn">Add Contact</button>
+                <button type="button" class="btn delete-btn">Delete</button>
+              </div>
+            </form>
+
+            <div class="contacts-list" id="contactsList">
+              <h3>Saved Contacts</h3>
+              <ul id="contactItems"></ul>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </header>
+
+  <script>
+    const profileImg = document.getElementById('profileImg');
+    const fileInput = document.getElementById('fileInput');
+    const form = document.getElementById('profileForm');
+    const addContactBtn = document.getElementById('addContactBtn');
+    const contactsList = document.getElementById('contactItems');
+
+    profileImg.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          profileImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    addContactBtn.addEventListener('click', () => {
+      const contactName = document.getElementById('contactName').value.trim();
+      const contactEmail = document.getElementById('contactNumber').value.trim();
+
+      if (!contactName || !contactEmail) {
+        alert("Please enter both contact name and Number.");
+        return;
+      }
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${contactName} - ${contactNumber}</span>
+        <button class="remove-btn">❌</button>
+      `;
+
+      li.querySelector(".remove-btn").addEventListener("click", () => {
+        li.remove();
+      });
+
+      contactsList.appendChild(li);
+
+      document.getElementById('contactName').value = "";
+      document.getElementById('contactNumber').value = "";
+    });
+  </script>
+</body>
+</html>
