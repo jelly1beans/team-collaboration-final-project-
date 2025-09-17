@@ -78,6 +78,31 @@ def profile_page():
 def home_page():
     return render_template("home.html")
 
+## services pages ##
+@app.route("/Farsighted")
+def farsighted_page():
+    return render_template("farsighted.html")
+
+@app.route("/Astigmatism")
+def astigmatism_page():   
+    return render_template("astigmatism.html")
+
+@app.route("/Cataracts")
+def cataracts_page():
+    return render_template("Cataracts.html")
+
+@app.route("/Nearsighted")
+def nearsighted_page():
+    return render_template("nearsighted.html")
+
+@app.route("/Services")
+def service_page():
+    return render_template("Services.html")
+
+@app.route("/Presbyopia")
+def presbyopia_page():
+    return render_template("Presbyopia.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
