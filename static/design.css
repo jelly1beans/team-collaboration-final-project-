@@ -5,30 +5,39 @@
     font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
-nav {
+.navbar {
+  display: flex;
+  align-items: center;
   background: #0d6238;
+  padding: 10px 30px;
 }
 
-nav ul {
+.logo-container {
+  margin-right: 35px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+}
+
+.nav-menu {
   list-style: none;
+  display: flex;
+  gap: 50px;
   margin: 0;
   padding: 0;
-  display: flex;
 }
 
-nav ul li {
-  position: relative;
-}
-
-nav ul li a {
+.nav-menu li a {
   color: white;
   text-decoration: none;
-  padding: 10px 15px;
-  display: block;
+  font-size: 20px;
 }
 
-nav ul li:hover {
-  background: #0d6238;
+
+.nav-menu li a:hover {
+  color:#4CAF50
 }
 .content{
     width: 1200px;
@@ -87,7 +96,7 @@ nav ul li:hover {
 .form{
     width: 270px;
     height: 400px;
-    background: linear-gradient(to top, rgba(23, 94, 42, 0.8)50%,rgba(24, 93, 43, 0.8)50%);
+    background:#0d6238;
     position: absolute;
     top: 10px;
     left: 870px;
@@ -96,13 +105,12 @@ nav ul li:hover {
     padding: 25px;
 }
 
-.form h2{
+.form h3{
     width: 220px;
     font-family: sans-serif;
     text-align: center;
-    color: #1a9126;
+    color: #ffffff;
     font-size: 22px;
-    background-color: #fff;
     border-radius: 10px;
     margin: 2px;
     padding: 8px;
@@ -111,13 +119,13 @@ nav ul li:hover {
 .form input{
     width: 250px;
     height: 40px;
-    background: rgb(23, 87, 23);
+    background: rgb(244, 244, 244);
     border-bottom: 1px solid #1a9126;
     border-top: 1px solid #1a9126;
     border-right: none;
     border-left: none;
     border-radius: 10px;
-    color: #fff;
+    color: #0c0808;
     font-size: 15px;
     letter-spacing: 1px;
     margin-top: 30px;

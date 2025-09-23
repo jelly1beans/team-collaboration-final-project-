@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="{{url_for('static', filename = 'style1.css')}}">
 </head>
 <body>
-
-  <nav>
-    <ul>
-      <li><a href="{{ url_for('home_page') }}">Home</a></li>
+ <nav class="navbar">
+    <div class="logo-container">
+      <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#">HOME</a></li>
+      <li><a href="#">ABOUT US</a></li>
       <li>
-        <a href="{{ url_for('service_page') }}">Service ▾</a>
+        <a href="{{ url_for('service_page') }}">SERVICE ▾</a>
         <ul>
           <li><a href="{{url_for('nearsighted_page')}}">Nearsightedness</a></li>
           <li><a href="{{ url_for('farsighted_page') }}">Farsightedness</a></li>
@@ -21,9 +24,9 @@
           <li><a href="{{ url_for('cataracts_page') }}">Cataract</a></li>
         </ul>
       </li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="#">CONTACT</a></li>
     </ul>
+  </nav>
     <!DOCTYPE html>
 <html lang="en">
 <head>

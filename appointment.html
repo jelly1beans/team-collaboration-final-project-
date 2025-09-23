@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Eye Clinic — Appointment Booking</title>
+  <link rel="stylesheet" href="appointment.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card" role="region" aria-label="Appointment booking">
+      <h1>Book an Appointment</h1>
+      <p class="lead">Fill in your details below and choose a date & time. We'll contact you to confirm.</p>
+
+      <form id="bookingForm" novalidate>
+        <div class="full">
+          <label for="fullname">Full name</label>
+          <input id="fullname" name="fullname" type="text" placeholder="Ex.Juan Dela Cruz" required aria-required="true">
+        </div>
+
+        <div>
+          <label for="gender">Gender </label>
+          <input id="gender" name="gender" type="text" placeholder="Ex.Male" required aria-required="true">
+        </div>
+
+        <div>
+          <label for="contact">Contact number</label>
+          <input id="contact" name="contact" type="tel" placeholder="+63917xxxxxxx" pattern="^\+?\d{7,15}$" required aria-required="true">
+          <small class="note">Include country code (e.g. +63) or start with 09. 7–12 digits.</small>
+        </div>
+
+        <div>
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" placeholder="name@example.com" required aria-required="true">
+        </div>
+
+        <div>
+          <label for="date">Preferred date</label>
+          <input id="date" name="date" type="date" required aria-required="true">
+        </div>
+
+        <div>
+          <label for="time">Preferred time</label>
+          <input id="time" name="time" type="time" required aria-required="true">
+        </div>
+
+        <div class="full">
+          <label for="service">Service</label>
+          <select id="service" name="service">
+            <option value="">-- Choose --</option>
+            <option>Cataract</option>
+            <option>Nearsightedness</option>
+            <option>Farsightedness</option>
+            <option>Astigmatism</option>
+            <option>Presbyopia</option>
+          </select>
+        </div>
+
+       
+        <div class="full" id="doctorField" style="display:none;">
+          <label for="doctor">Doctor</label>
+          <select id="doctor" name="doctor">
+            <option value="">-- Select a Doctor --</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" name="notes" placeholder="Any special requirements or additional info..."></textarea>
+        </div>
+
+       <div class="full actions">
+  <span class="note" id="error" role="status" aria-live="polite"></span>
+  <button type="submit">Request appointment</button>
+</div>
+
+<!-- ✅ Consent checkbox moved below button -->
+<div class="full consent">
+  <input type="checkbox" id="consent" name="consent" required aria-required="true">
+  <label for="consent">
+    I hereby agree and consent that <strong>Eye Clinic</strong> may collect, use, disclose, and process my personal 
+    information set out in this form to help with my appointment booking, consultation, or request for services. 
+    View <a href="privacy-policy.html" target="_blank">Privacy Policy</a>.
+  </label>
+</div>
+      </form>
+
+      <div id="confirmation" class="success" style="display:none" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script>
+    
+    function localYYYYMMDD(d){
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    const dateInput = document.getElementById('date');
+    const today = new Date();
+    dateInput.min = localYYYYMMDD(today);
+
+    const form = docu

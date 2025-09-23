@@ -36,14 +36,17 @@
 </style>
 </head>
 <body>
-    <nav>
-        <ul>
-                    <li><a href="#" title="home">HOME</a></li>
-                    <li><a href="#About Us" title="aboutUs">ABOUT US</a></li>
-                    <li><a href="#Services" title="services">SERVICE</a></li>
-                    <li><a href="#" title="contact">CONTACT</a></li>
-                </ul>    
-    </nav>
+        <nav class="navbar">
+    <div class="logo-container">
+      <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#">HOME</a></li>
+      <li><a href="#">ABOUT US</a></li>
+      <li><a href="#">SERVICE</a></li>
+      <li><a href="#">CONTACT</a></li>
+    </ul>
+  </nav>
         <div class="content">
             <h1>PWDs<br><span>Health</span> <br>Care</h1>
             <p class="par">The PWD System is an integrated platform designed to efficiently manage
@@ -51,7 +54,7 @@
                 <br> It streamlines registration, verification, and access to assistance, ensuring
                 <br>transparency, inclusivity, and improved service delivery for both beneficiaries and service providers
             </p>
-                <form action="/LogIn" method="post">
+                <form action="/LogIn" method="POST">
                 <div class="form">
                 <h3 style="text-align: center; font-size: 30px;">LogIn</h3>
 

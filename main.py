@@ -22,7 +22,7 @@ def signup_process():
     email = request.form.get("email")
     password = request.form.get("password")
     
-    sql="INSERT INTO pwdsusers (PWDs_name, PWDs_email, PWDs_password) VALUES(%s, %s, %s)"
+    sql="INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)"
     cursor.execute(sql, (name, email, password))  
     connection.commit()
 
@@ -37,13 +37,13 @@ def login():
     email = request.form['email']
     password = request.form['password']
 
-    cursor.execute("SELECT * FROM pwdsusers WHERE PWDs_email = %s", (email,))
+    cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
     user = cursor.fetchone()
 
     if not user:
         flash("Email not found.")
         return redirect(url_for('login_page'))
-    elif user['PWDs_password'] != password:
+    elif user['User_password'] != password:
         flash("Incorrect password.")
         return redirect(url_for('login_page'))
     else:
@@ -102,6 +102,10 @@ def service_page():
 @app.route("/Presbyopia")
 def presbyopia_page():
     return render_template("Presbyopia.html")
+
+@app.route("/Appointment")
+def appointment_page():
+    return render_template("appointment.html")
 
 
 if __name__ == "__main__":
