@@ -7,7 +7,7 @@
 .navbar {
   display: flex;
   align-items: center;
-  background: #0d6238;
+  background:  #14884e;
   padding: 10px 30px;
 }
 
@@ -93,7 +93,7 @@
 .form{
     width: 270px;
     height: 400px;
-    background: linear-gradient(to top, rgba(23, 94, 42, 0.8)50%,rgba(24, 93, 43, 0.8)50%);
+    background:#0d6238;
     position: absolute;
     top: 10px;
     left: 870px;

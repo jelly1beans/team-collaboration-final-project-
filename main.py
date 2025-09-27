@@ -12,9 +12,12 @@ connection = pymysql.connect(
     )
 cursor = connection.cursor()
 
+## routes ##
 @app.route("/")
 def landing_page():
     return render_template("index.html")
+
+## signup route ##
 
 @app.route("/SignUp", methods=['POST'])
 def signup_process():
@@ -27,6 +30,7 @@ def signup_process():
     connection.commit()
 
     return redirect(url_for("home_page"))
+## login route ##
 
 @app.route("/Login")
 def login_page():
@@ -50,17 +54,19 @@ def login():
         flash("Login successful!")
         return redirect(url_for('home_page'))
     
+## forgot password route ##  
+  
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
         email = request.form['email']
         new_password = request.form['new_password']
 
-        cursor.execute("SELECT * FROM pwdsusers WHERE PWDs_email = %s", (email,))
+        cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
         user = cursor.fetchone()
 
         if user:
-            cursor.execute("UPDATE pwdsusers SET PWDs_password = %s WHERE PWDs_email = %s", (new_password, email))
+            cursor.execute("UPDATE user SET User_password = %s WHERE User_email = %s", (new_password, email))
             connection.commit()
             flash("Password updated successfully.")
             return redirect(url_for('home_page'))
@@ -69,6 +75,8 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
 
     return render_template('forgot_password.html')
+
+## other pages ##
 
 @app.route("/Profile")
 def profile_page():
@@ -79,6 +87,7 @@ def home_page():
     return render_template("home.html")
 
 ## services pages ##
+
 @app.route("/Farsighted")
 def farsighted_page():
     return render_template("farsighted.html")
@@ -103,10 +112,40 @@ def service_page():
 def presbyopia_page():
     return render_template("Presbyopia.html")
 
+## appointment page ##
+
 @app.route("/Appointment")
 def appointment_page():
     return render_template("appointment.html")
 
+@app.route("/AppointmentProcs", methods=['POST'])
+def appointment_process():
+    fullname = request.form.get("fullname")
+    gender = request.form.get("gender")
+    contact = request.form.get("contact")
+    email = request.form.get("email")
+    date = request.form.get("date")
+    time = request.form.get("time")
+    service = request.form.get("service")
+    doctor = request.form.get("doctor")
+    reason= request.form.get("notes")
+
+    
+    sql="INSERT INTO appointment (full_name, gender, contact, email, date, time, service, doctor, notes) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(sql, (fullname, gender, contact, email, date, time, service, doctor, reason))  
+    connection.commit()
+
+    
+    # Flash message with doctor and reason
+    flash(f"You have successfully booked an appointment with Dr. {doctor} for '{service}'.", "success")
+
+    return redirect(url_for("home_page"))
+
+## privacy policy page ##
+
+@app.route("/Policy-Privacy")
+def policy_page():
+    return render_template("privacy-policy.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

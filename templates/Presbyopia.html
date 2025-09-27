@@ -14,7 +14,7 @@
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
     <ul class="nav-menu">
-      <li><a href="#">HOME</a></li>
+       <li><a href="{{ url_for('home_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
       <li>
         <a href="{{ url_for('service_page') }}">SERVICE ▾</a>
@@ -26,7 +26,11 @@
           <li><a href="{{ url_for('cataracts_page') }}">Cataract</a></li>
         </ul>
       </li>
-      <li><a href="#">CONTACT</a></li>
+     <li><a href="{{ url_for('appointment_page')}}">Book Now</a></li>
+    </ul>
+    <ul class="nav-menu-right">
+      <li><a href="{{ url_for('landing_page') }}">LOG OUT</a></li>
+      <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
   </nav>
 
@@ -59,22 +63,16 @@
           <img src="{{ url_for('static', filename='image/doc hans.jpg') }}" alt="Dr. Smith">
           <h3>Dr. Hans Smith</h3>
           <p>Ophthalmologist, Age-related Vision Specialist</p>
-          <br>
-          <a href="{{ url_for('appointment_page') }}">Book Appointment</a>
         </div>
         <div class="doctor-card">
           <img src="{{ url_for('static', filename='image/doc sean.jpg') }}"alt="Dr. Lee">
           <h3>Dr. Sean Lee</h3>
           <p>Optometrist, Progressive Lens Expert</p>
-          <br>
-          <a href="{{ url_for('appointment_page') }}">Book Appointment</a>
         </div>
         <div class="doctor-card">
           <img src="{{ url_for('static', filename='image/doc raisy.jpg') }}" alt="Dr. Garcia">
           <h3>Dr. Raisy Garcia</h3>
           <p>Refractive Surgery Specialist (Multifocal Implants)</p>
-          <br>
-          <a href="{{ url_for('appointment_page') }}">Book Appointment</a>
           <script>
 function openModal(id) {
   document.getElementById(id).style.display = "flex";
