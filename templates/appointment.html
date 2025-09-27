@@ -12,15 +12,16 @@
       <h1>Book an Appointment</h1>
       <p class="lead">Fill in your details below and choose a date & time. We'll contact you to confirm.</p>
 
-      <form id="bookingForm" novalidate>
+      <form id="bookingForm" novalidate method="POST" action="{{ url_for('appointment_process') }}">
         <div class="full">
           <label for="fullname">Full name</label>
-          <input id="fullname" name="fullname" type="text" placeholder="Ex.Juan Dela Cruz" required aria-required="true">
+          <input id="fullname" name="fullname" type="text" placeholder="Ex. Juan Dela Cruz" required aria-required="true">
         </div>
+
         <div>
-          <label for="gender">Gender </label>
-          <input id="gender" name="gender" type="text" placeholder="Ex.Male" required aria-required="true">
-          </div>
+          <label for="gender">Gender</label>
+          <input id="gender" name="gender" type="text" placeholder="Ex. Male" required aria-required="true">
+        </div>
 
         <div>
           <label for="contact">Contact number</label>
@@ -44,6 +45,26 @@
         </div>
 
         <div class="full">
+          <label for="service">Service</label>
+          <select id="service" name="service" required>
+            <option value="">-- Choose --</option>
+            <option value="Cataract">Cataract</option>
+            <option value="Nearsightedness">Nearsightedness</option>
+            <option value="Farsightedness">Farsightedness</option>
+            <option value="Astigmatism">Astigmatism</option>
+            <option value="Presbyopia">Presbyopia</option>
+          </select>
+        </div>
+
+        <!-- Doctor field -->
+        <div class="full" id="doctorField" style="display:none;">
+          <label for="doctor">Doctor</label>
+          <select id="doctor" name="doctor" required>
+            <option value="">-- Select a Doctor --</option>
+          </select>
+        </div>
+
+        <div class="full">
           <label for="notes">Notes (optional)</label>
           <textarea id="notes" name="notes" placeholder="Any special requirements or additional info..."></textarea>
         </div>
@@ -52,74 +73,67 @@
           <span class="note" id="error" role="status" aria-live="polite"></span>
           <button type="submit">Request appointment</button>
         </div>
+
+        <!-- ✅ Consent checkbox -->
+        <div class="full consent">
+          <input type="checkbox" id="consent" name="consent" required aria-required="true">
+          <label for="consent">
+            I hereby agree and consent that <strong>Eye Clinic</strong> may collect, use, disclose, and process my personal 
+            information set out in this form to help with my appointment booking, consultation, or request for services. 
+            View <a href="{{ url_for('policy_page') }}"target="_blank">Privacy Policy</a>.
+          </label>
+        </div>
       </form>
 
       <div id="confirmation" class="success" style="display:none" role="status" aria-live="polite"></div>
-
     </div>
   </div>
 
   <script>
-    // Helper: format local date as yyyy-mm-dd
-    function localYYYYMMDD(d){
+    // Helper: format date yyyy-mm-dd
+    function localYYYYMMDD(d) {
       const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
       return `${yyyy}-${mm}-${dd}`;
     }
 
+    // Set min date = today
     const dateInput = document.getElementById('date');
     const today = new Date();
     dateInput.min = localYYYYMMDD(today);
 
-    const form = document.getElementById('bookingForm');
-    const errorEl = document.getElementById('error');
-    const conf = document.getElementById('confirmation');
+    // Doctor logic
+    const serviceSelect = document.getElementById("service");
+    const doctorField = document.getElementById("doctorField");
+    const doctorSelect = document.getElementById("doctor");
 
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      errorEl.textContent = '';
-      conf.style.display = 'none';
+    // Doctors per service
+    const doctorsByService = {
+      "Cataract": ["Dr. Charles Smith", "Dr. James Lee", "Dr. Leo Marvin"],
+      "Nearsightedness": ["Dr. Anna Smith", "Dr. James Lee", "Dr. Charles Garcia"],
+      "Farsightedness": ["Dr. Hans Smith", "Dr. Josh Lee", "Dr. Sean Garcia"],
+      "Astigmatism": ["Dr. Samantha Smith", "Dr. Hannah Lee", "Dr. Raisy Garcia"],
+      "Presbyopia": ["Dr. Hans Smith", "Dr. Sean Lee", "Dr. Raisy Garcia"]
+    };
 
-      const fullname = form.fullname.value.trim();
-      const contact = form.contact.value.trim();
-      const email = form.email.value.trim();
-      const date = form.date.value;
-      const time = form.time.value;
-      const service = form.service.value;
+    // Show doctors when service is selected
+    serviceSelect.addEventListener("change", function () {
+      const service = this.value;
+      doctorSelect.innerHTML = '<option value="">-- Select a Doctor --</option>';
 
-      if(!fullname || !contact || !email || !date || !time || !service || !doctor){
-        errorEl.textContent = 'Please fill in all required fields.';
-        return;
+      if (service && doctorsByService[service]) {
+        doctorField.style.display = "block";
+        doctorsByService[service].forEach(doctor => {
+          const option = document.createElement("option");
+          option.value = doctor;
+          option.textContent = doctor;
+          doctorSelect.appendChild(option);
+        });
+      } else {
+        doctorField.style.display = "none";
       }
-
-      const phoneRe = /^\+?\d{7,15}$/;
-      if(!phoneRe.test(contact)){
-        errorEl.textContent = 'Contact number seems invalid. Use 7–12 digits, optional + country code.';
-        return;
-      }
-
-      const chosen = new Date(date + 'T00:00:00');
-      const startOfToday = new Date(localYYYYMMDD(new Date()) + 'T00:00:00');
-      if(chosen < startOfToday){
-        errorEl.textContent = 'Please choose today or a future date.';
-        return;
-      }
-
-      conf.innerHTML = `<strong>Appointment requested!</strong>
-        <div style="margin-top:8px">Thank you, <strong>${escapeHtml(fullname)}</strong>. We received your request for <strong>${escapeHtml(service)}</strong> with <strong>${escapeHtml(doctor)}</strong> on <strong>${escapeHtml(date)}</strong> at <strong>${escapeHtml(time)}</strong>.<br>
-        We will contact you at <strong>${escapeHtml(contact)}</strong> or <strong>${escapeHtml(email)}</strong> to confirm the appointment.</div>`;
-      conf.style.display = 'block';
-
-      form.reset();
-      dateInput.min = localYYYYMMDD(new Date());
     });
-
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, function(c){
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];
-      });
-    }
   </script>
 </body>
 </html>

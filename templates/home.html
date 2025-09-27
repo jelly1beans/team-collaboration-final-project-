@@ -4,16 +4,21 @@
     <title>Webpage Design</title>
     <link rel="stylesheet" href="{{url_for('static', filename = 'home.css')}}">
 </head>
-<body>
+<body> 
+  <!-- Navigation -->
      <nav class="navbar">
     <div class="logo-container">
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
     <ul class="nav-menu">
-      <li><a href="#">HOME</a></li>
+       <li><a href="{{ url_for('home_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
       <li><a href="{{ url_for('service_page') }}">SERVICE</a></li>
       <li><a href="#">CONTACT</a></li>
+    </ul>
+    <ul class="nav-menu-right">
+      <li><a href="{{ url_for('landing_page') }}">LOG OUT</a></li>
+      <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
   </nav>
         <div class="content">
@@ -24,5 +29,19 @@
                 <br>transparency, inclusivity, and improved service delivery for both beneficiaries and service providers
             </p>
         </div>
+      <script>
+  // Auto-dismiss flash message after 5 seconds
+  setTimeout(function() {
+    const alert = document.querySelector('.alert');
+    if (alert) {
+      alert.classList.remove('show');
+      alert.classList.add('hide');
+    }
+  }, 5000);
+</script>
+
+
+
 </body>
+
 </html>

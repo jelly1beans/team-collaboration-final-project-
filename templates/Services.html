@@ -12,7 +12,7 @@
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
     <ul class="nav-menu">
-      <li><a href="#">HOME</a></li>
+      <li><a href="{{ url_for('home_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
       <li>
         <a href="{{ url_for('service_page') }}">SERVICE ▾</a>
@@ -24,7 +24,11 @@
           <li><a href="{{ url_for('cataracts_page') }}">Cataract</a></li>
         </ul>
       </li>
-      <li><a href="#">CONTACT</a></li>
+      <li><a href="{{ url_for('appointment_page')}}">Book Now</a></li>
+    </ul>
+    <ul class="nav-menu-right">
+      <li><a href="{{ url_for('landing_page') }}">LOG OUT</a></li>
+      <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
   </nav>
     <!DOCTYPE html>
