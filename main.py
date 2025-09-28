@@ -82,6 +82,13 @@ def forgot_password():
 def profile_page():
     return render_template("profile.html")
 
+@app.route("/Delete-Account", methods=['POST'])
+def delete_account_page():
+    delete = request.form.get("delete")
+
+    return redirect(url_for("profile_page"))
+
+
 @app.route("/Home")
 def home_page():
     return render_template("home.html")
@@ -146,6 +153,11 @@ def appointment_process():
 @app.route("/Policy-Privacy")
 def policy_page():
     return render_template("privacy-policy.html")
+
+## admin ##
+@app.route("/Admin")
+def admin_page():
+    return render_template("admin.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

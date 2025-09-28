@@ -22,6 +22,9 @@
   text-decoration: none;
   font-size: 20px;
 }
+.nav-menu-right li a:hover {
+  color:#4CAF50
+}
 
 .logo-container {
   margin-right: 35px;
