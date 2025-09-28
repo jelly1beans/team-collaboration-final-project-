@@ -7,113 +7,118 @@
   <link rel="stylesheet" href="{{url_for('static', filename = 'pstyle.css')}}">
 </head>
 <body>
-  <header>
-    <div class="main">
-        <div class="navbar">
-            <div class="icon">
-                <h2 class="logo">DHMS</h2>
-            </div>
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-icon">
+        <img id="profileImage" src="https://img.icons8.com/ios-filled/100/FFFFFF/user.png" alt="User">
+      </div>
+      <!-- Hidden input with styled label -->
+      <input type="file" id="uploadImage" accept="image/*">
+      <label for="uploadImage" class="upload-btn">Change Picture</label>
 
-            <div class="menu">
-                <ul>
-                    <li><a href="{{url_for('home_page')}}" title="home">HOME</a></li>
-                    <li><a href="#" title="services">SERVICE</a></li>
-                    <li><a href="{{url_for('landing_page')}}" title="logout">LOGOUT</a></li>
-                </ul>
-            </div>
-        </div>
+      <h2>PROFILE</h2>
 
-      
-        <div class="profile-container">
-          <div class="profile-card">
-            <h2>User Profile</h2>
-            
-            <div class="profile-image">
-      <img src="https://via.placeholder.com/120" alt="Profile Photo" id="profileImg">
-      <input type="file" id="fileInput" style="display:none;">
+      <div class="actions">
+        <button id="deleteBtn">Delete</button>
+        <button id="updateBtn">Update</button>
+        <button id="addBtn">Add Contact</button>
+      </div>
     </div>
 
-    <form id="profileForm">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" value="Jerbeth" required>
+    <!-- Details Section -->
+    <div class="details-section">
+      <div class="input-box">
+        <label>Name (Full Name):</label>
+        <input type="text" id="name" value="Juan Dela Cruz">
+      </div>
+      <div class="input-box">
+        <label>Contact number:</label>
+        <input type="text" id="contact" value="+63 912 345 6789">
+      </div>
+      <div class="input-box">
+        <label>Email:</label>
+        <input type="email" id="email" value="juan.delacruz@email.com">
       </div>
 
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" value="jerbeth@example.com" required>
-      </div>
-
-      <div class="form-group">
-        <label for="contactName">Contacts:</label>
-        <input type="text" id="contactName" placeholder="Enter contact name">
-      </div>
-
-      <div class="form-group">
-        <label for="contactEmail">Contact Number:</label>
-        <input type="contact" id="contactNumber" placeholder="Enter contact number">
-      </div>
-              <div class="button-group">
-                <button type="submit" class="btn save-btn">Save</button>
-                <button type="button" id="addContactBtn" class="btn add-contact-btn">Add Contact</button>
-                <button type="button" class="btn delete-btn">Delete</button>
-              </div>
-            </form>
-
-            <div class="contacts-list" id="contactsList">
-              <h3>Saved Contacts</h3>
-              <ul id="contactItems"></ul>
-            </div>
-          </div>
+      <!-- Booked Appointments -->
+      <div class="appointments">
+        <div class="appt-header">Booked Appointments:</div>
+        <div class="appt-list" id="appointmentsList">
+          <p>Appointment 1 <button class="cancel-btn">Cancel</button></p>
+          <p>Appointment 2 <button class="cancel-btn">Cancel</button></p>
         </div>
-
+      </div>
     </div>
-  </header>
+  </div>
 
   <script>
-    const profileImg = document.getElementById('profileImg');
-    const fileInput = document.getElementById('fileInput');
-    const form = document.getElementById('profileForm');
-    const addContactBtn = document.getElementById('addContactBtn');
-    const contactsList = document.getElementById('contactItems');
+    // Profile Picture Preview
+    const uploadInput = document.getElementById('uploadImage');
+    const profileImg = document.getElementById('profileImage');
 
-    profileImg.addEventListener('click', () => {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
+    uploadInput.addEventListener('change', function() {
+      const file = this.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onload = function(e) {
           profileImg.src = e.target.result;
+          localStorage.setItem("profilePic", e.target.result);
         };
         reader.readAsDataURL(file);
       }
     });
-    addContactBtn.addEventListener('click', () => {
-      const contactName = document.getElementById('contactName').value.trim();
-      const contactEmail = document.getElementById('contactNumber').value.trim();
 
-      if (!contactName || !contactEmail) {
-        alert("Please enter both contact name and Number.");
-        return;
+    // Load saved profile pic from localStorage
+    window.addEventListener("load", () => {
+      const savedPic = localStorage.getItem("profilePic");
+      if (savedPic) {
+        profileImg.src = savedPic;
       }
+    });
 
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span>${contactName} - ${contactNumber}</span>
-        <button class="remove-btn">❌</button>
-      `;
+    // Buttons
+    document.getElementById("updateBtn").addEventListener("click", () => {
+      const name = document.getElementById("name").value;
+      const contact = document.getElementById("contact").value;
+      const email = document.getElementById("email").value;
 
-      li.querySelector(".remove-btn").addEventListener("click", () => {
-        li.remove();
-      });
+      localStorage.setItem("name", name);
+      localStorage.setItem("contact", contact);
+      localStorage.setItem("email", email);
 
-      contactsList.appendChild(li);
+      alert("Profile updated successfully!");
+    });
 
-      document.getElementById('contactName').value = "";
-      document.getElementById('contactNumber').value = "";
+    document.getElementById("deleteBtn").addEventListener("click", () => {
+      if (confirm("Are you sure you want to delete this profile?")) {
+        localStorage.clear();
+        document.getElementById("name").value = "";
+        document.getElementById("contact").value = "";
+        document.getElementById("email").value = "";
+        profileImg.src = "https://img.icons8.com/ios-filled/100/FFFFFF/user.png";
+        alert("Profile deleted.");
+      }
+    });
+
+    document.getElementById("addBtn").addEventListener("click", () => {
+      const contact = prompt("Enter new contact number:");
+      if (contact) {
+        alert("New contact added: " + contact);
+      }
+    });
+
+    // Load saved profile info
+    window.addEventListener("load", () => {
+      if (localStorage.getItem("name")) {
+        document.getElementById("name").value = localStorage.getItem("name");
+      }
+      if (localStorage.getItem("contact")) {
+        document.getElementById("contact").value = localStorage.getItem("contact");
+      }
+      if (localStorage.getItem("email")) {
+        document.getElementById("email").value = localStorage.getItem("email");
+      }
     });
   </script>
 </body>

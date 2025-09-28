@@ -39,6 +39,21 @@
 .nav-menu li a:hover {
   color:#4CAF50
 }
+.nav-menu-right {
+  gap: 50px;
+  padding: 10px 30px;
+  display: flex;
+  list-style: none;
+  margin-left: auto;
+}
+.nav-menu-right li a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+.nav-menu-right li a:hover {
+  color:#4CAF50
+}
 .content{
     width: 1200px;
     height: auto;
