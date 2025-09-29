@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
-import pymysql
+from flask import Flask, render_template, request, redirect, url_for,flash, session, send_file
+import pymysql, io
 app = Flask (__name__)
 app.secret_key = 'your_secret_key'
+SESSION_USER_ID = 'user_id'
 
 connection = pymysql.connect(
     host = "localhost",
@@ -17,19 +18,37 @@ cursor = connection.cursor()
 def landing_page():
     return render_template("index.html")
 
-## signup route ##
+@app.route("/Logout")
+def logout():
+    session.pop('user_id', None)
+    flash("You have been logged out.")
+    return redirect(url_for('landing_page'))
 
+
+## signup route ##
 @app.route("/SignUp", methods=['POST'])
 def signup_process():
     name = request.form.get("name")
     email = request.form.get("email")
     password = request.form.get("password")
     
-    sql="INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)"
-    cursor.execute(sql, (name, email, password))  
+    cursor.execute("INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)",
+                   (name, email, password))  
+    connection.commit()
+
+    cursor.execute("SELECT User_id FROM user WHERE User_email = %s", (email,))
+    user = cursor.fetchone()
+    user_id = user['User_id']
+    session['user_id'] = user_id
+
+    # auto create profile row
+    cursor.execute("INSERT INTO profile (Full_name, Email, Contact, User_id) VALUES (%s, %s, %s, %s)",
+                   (name, email, " ", user_id))
     connection.commit()
 
     return redirect(url_for("home_page"))
+
+
 ## login route ##
 
 @app.route("/Login")
@@ -51,9 +70,10 @@ def login():
         flash("Incorrect password.")
         return redirect(url_for('login_page'))
     else:
+        session['user_id'] = user['User_id']   # ✅ Save login session
         flash("Login successful!")
         return redirect(url_for('home_page'))
-    
+
 ## forgot password route ##  
   
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -76,19 +96,95 @@ def forgot_password():
 
     return render_template('forgot_password.html')
 
-## other pages ##
+## profile pages ##
 
 @app.route("/Profile")
 def profile_page():
-    return render_template("profile.html")
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("Please log in to view your profile.")
+        return redirect(url_for('login_page'))
 
-@app.route("/Delete-Account", methods=['POST'])
-def delete_account_page():
-    delete = request.form.get("delete")
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    cursor.execute("""SELECT c.Contact_id, c.Contact_number FROM contacts c JOIN profile p ON c.Profile_id = p.Profile_id 
+    WHERE p.User_id = %s""", (user_id,))
+    contacts = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM appointment WHERE User_id = %s", (user_id,))
+    appointments = cursor.fetchall()
+
+    return render_template("profile.html", profile=profile, contacts=contacts, appointments=appointments)
+
+@app.route("/profile", methods=["POST"])
+def edit_profile_page():
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in to edit your profile.")
+        return redirect(url_for("login_page"))
+
+    action = request.form.get("action-btn")
+    fullname = request.form.get("fullname")
+    contact_number = request.form.get("contact_number")
+    email = request.form.get("email")
+    file = request.files.get("profileImage")
+    image_data = file.read() if file else None
+
+    if action == "delete-btn":
+        # delete profile + user
+        cursor.execute("DELETE FROM profile WHERE user_id = %s", (user_id,))
+        cursor.execute("DELETE FROM user WHERE User_id = %s", (user_id,))
+        connection.commit()
+        session.clear()
+        flash("Account and profile deleted.")
+        return redirect(url_for("landing_page"))
+
+    elif action == "save-btn":
+        # save/update profile info
+        cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+        existing = cursor.fetchone()
+
+        if existing:
+            cursor.execute(
+                """UPDATE profile 
+                   SET Full_name=%s, Contact=%s, Email=%s, Image=%s 
+                   WHERE User_id=%s""",
+                (fullname, contact_number, email, image_data, user_id),
+            )
+        else:
+            cursor.execute(
+                """INSERT INTO profile (Full_name, Contact, Email, Image, User_id) 
+                   VALUES (%s, %s, %s, %s, %s)""",
+                (fullname, contact_number, email, image_data, user_id),
+            )
+        connection.commit()
+        flash("Profile saved.")
+
+    elif action == "add-contact-btn":
+        extra_contact = request.form.get("extra_contact")
+        if extra_contact:
+            cursor.execute(
+                "INSERT INTO contacts (user_id, contact_number) VALUES (%s, %s)",
+                (user_id, extra_contact),
+            )
+            connection.commit()
+            flash("Extra contact added.")
 
     return redirect(url_for("profile_page"))
 
 
+@app.route('/profile/image/<int:user_id>')
+def get_profile_image(user_id):
+    cursor.execute("SELECT Image FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+    if profile and profile['Image']:
+        return send_file(io.BytesIO(profile['Image']), mimetype='image/jpeg')
+    else:
+        return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
+
+
+## home page ##
 @app.route("/Home")
 def home_page():
     return render_template("home.html")
@@ -121,32 +217,49 @@ def presbyopia_page():
 
 ## appointment page ##
 
-@app.route("/Appointment")
+@app.route("/appointment", methods=["GET", "POST"])
 def appointment_page():
-    return render_template("appointment.html")
+    if request.method == "GET":
+        return render_template("appointment.html")
 
-@app.route("/AppointmentProcs", methods=['POST'])
-def appointment_process():
-    fullname = request.form.get("fullname")
-    gender = request.form.get("gender")
-    contact = request.form.get("contact")
-    email = request.form.get("email")
-    date = request.form.get("date")
-    time = request.form.get("time")
-    service = request.form.get("service")
-    doctor = request.form.get("doctor")
-    reason= request.form.get("notes")
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in first.")
+        return redirect(url_for("login_page"))
 
-    
-    sql="INSERT INTO appointment (full_name, gender, contact, email, date, time, service, doctor, notes) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(sql, (fullname, gender, contact, email, date, time, service, doctor, reason))  
+    fullname = request.form["fullname"]
+    gender = request.form["gender"]
+    contact = request.form["contact"]
+    email = request.form["email"]
+    date = request.form["date"]
+    time = request.form["time"]
+    service = request.form["service"]
+    doctor = request.form["doctor"]
+    notes = request.form.get("notes", "")
+
+    cursor.execute("""INSERT INTO appointment
+                      (user_id, fullname, gender, contact, email, appt_date, appt_time, service, doctor, notes)
+                      VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                   (user_id, fullname, gender, contact, email, date, time, service, doctor, notes))
     connection.commit()
+    flash("Appointment booked successfully.")
+    return redirect(url_for("profile_page"))
 
-    
-    # Flash message with doctor and reason
-    flash(f"You have successfully booked an appointment with Dr. {doctor} for '{service}'.", "success")
+@app.route("/cancel_appointment/<int:appt_id>", methods=["POST"])
+def cancel_appointment(appt_id):
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in to cancel appointments.")
+        return redirect(url_for("login_page"))
+    cursor.execute(
+        "DELETE FROM appointment WHERE appointment_id=%s AND user_id=%s",(appt_id, user_id))
+    connection.commit()
+    if cursor.rowcount > 0:
+        flash("Appointment cancelled.")
+    else:
+        flash("Could not cancel appointment — not found or not yours.")
+    return redirect(url_for("profile_page"))
 
-    return redirect(url_for("home_page"))
 
 ## privacy policy page ##
 
