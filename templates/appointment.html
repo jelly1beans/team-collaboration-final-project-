@@ -12,7 +12,7 @@
       <h1>Book an Appointment</h1>
       <p class="lead">Fill in your details below and choose a date & time. We'll contact you to confirm.</p>
 
-      <form id="bookingForm" novalidate method="POST" action="{{ url_for('appointment_process') }}">
+      <form id="bookingForm" novalidate method="POST" action="{{ url_for('appointment_page') }}">
         <div class="full">
           <label for="fullname">Full name</label>
           <input id="fullname" name="fullname" type="text" placeholder="Ex. Juan Dela Cruz" required aria-required="true">

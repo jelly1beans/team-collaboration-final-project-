@@ -1,8 +1,63 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+nav {
+  z-index: 50;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  background:  #14884e;
+  padding: 10px 30px;
+  position:relative;
+}
+.nav-menu-right {
+  gap: 50px;
+  padding: 10px 30px;
+  display: flex;
+  list-style: none;
+  margin-left: auto;
+}
+.nav-menu-right li a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+.nav-menu-right li a:hover {
+  color:#4CAF50
+}
+.logo-container {
+  margin-right: 35px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 50px;
   margin: 0;
   padding: 0;
+}
+.nav-menu li {
+  position: relative;
+}
+
+.nav-menu li a{
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  position: center;
+}
+
+.nav-menu li a:hover {
+  color:#4CAF50
 }
 
 /* Main container */
@@ -72,6 +127,7 @@ body {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  
 }
 .profile-section button:hover {
   background: #094d09;
@@ -85,6 +141,8 @@ body {
   border-radius: 12px;
   padding: 20px;
   max-width: 600px;
+  height: fit-content;
+  margin-top: 100px;
 }
 
 /* Input Fields */
@@ -103,45 +161,53 @@ body {
   font-size: 14px;
 }
 
-/* Appointments Section */
+/* Appointments box */
 .appointments {
-  margin-top: 20px;
-  border: 2px solid #1a1a1a;
+  background-color: #f0fdf4;
+  border: 2px solid #2e7d32;
   border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-  color: #000;
+  padding: 15px 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Header styling */
 .appt-header {
-  background-color: #a3d89c;
-  padding: 10px;
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: #1b5e20;
+  margin-bottom: 10px;
 }
 
+/* Appointment list */
 .appt-list {
-  background-color: #f9f9f9;
-  padding: 12px;
-}
-
-.appt-list p {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0;
-  color: #0b3d0b;
-  font-size: 14px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.cancel-btn {
-  background: none;
-  border: none;
-  color: #0b3d0b;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13px;
+/* Individual appointment item */
+.appt-item {
+  background-color: #e8f5e9;
+  border-left: 4px solid #388e3c;
+  padding: 10px 15px;
+  border-radius: 6px;
+  position: relative;
 }
+
+/* Cancel button */
+.cancel-btn {
+  background-color: #c62828;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
 .cancel-btn:hover {
-  color: red;
+  background-color: #b71c1c;
 }
