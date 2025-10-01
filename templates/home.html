@@ -4,6 +4,35 @@
     <title>Webpage Design</title>
     <link rel="stylesheet" href="{{url_for('static', filename = 'home.css')}}">
 </head>
+<style>.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
+
+.flash-message {
+  background-color: #f44336;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+</style>
 <body> 
   <!-- Navigation -->
      <nav class="navbar">
@@ -17,7 +46,7 @@
       <li><a href="#">CONTACT</a></li>
     </ul>
     <ul class="nav-menu-right">
-      <li><a href="{{ url_for('landing_page') }}">LOG OUT</a></li>
+      <li><a href="{{ url_for('logout') }}">LOG OUT</a></li>
       <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
   </nav>
@@ -29,6 +58,40 @@
                 <br>transparency, inclusivity, and improved service delivery for both beneficiaries and service providers
             </p>
         </div>
+        <body>
+
+        <section id="About Us">
+                  <h1 style= "text-align: center; padding: 20px; color: #1f852e; margin-top: 50px; box-shadow:0px 2px 4px rgba(0,0,0,0.2);">About Us</h1>
+                  <div class="about-content">
+                    <div class="container">
+    <div class="card">
+      <h2>Mission</h2>
+      <p>
+        Our mission is to deliver an intuitive and efficient digital platform for Accessible Optimology eye Healthcare,
+        streamlining appointment scheduling and comprehensive patient management. We are dedicated to connecting patients with specialized eye care professionals,
+        enhancing health outcomes, and fostering a patient-centric ecosystem that ensures timely and personalized care for all.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Vision</h2>
+      <p>
+        To foster a vibrant and healthy Filipino society by guaranteeing equitable access to specialized eye care,
+        leveraging technology to make ophthalmological services convenient, efficient, and deeply personalized for every patient.
+      </p>
+    </div>
+  </div>
+  </section>
+</body>
+{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-message-container">
+                        {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                     </div>
+                {% endif %}
+            {% endwith %}
       <script>
   // Auto-dismiss flash message after 5 seconds
   setTimeout(function() {
