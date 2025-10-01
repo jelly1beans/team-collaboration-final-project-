@@ -4,6 +4,35 @@
     <title>Webpage Design</title>
     <link rel="stylesheet" href="{{url_for('static', filename = 'design.css')}}">
 </head>
+<style>.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
+
+.flash-message {
+  background-color: #f44336;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+</style>
 <body>
     <nav class="navbar">
     <div class="logo-container">
@@ -16,7 +45,7 @@
       <li><a href="#">CONTACT</a></li>
     </ul>
      <ul class="nav-menu-right">
-      <li><a href="{{ url_for('landing_page') }}">CUSTOMER</a></li>
+      <li><a href="{{ url_for('landing_page') }}">PATIENT</a></li>
       <li><a href="{{ url_for('admin_page') }}">ADMIN</a></li>
     </ul>
   </nav>
@@ -47,9 +76,16 @@
         </p>
     </div>
 </form>
-
-
         </div>
+        {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-message-container">
+                        {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                     </div>
+                {% endif %}
+            {% endwith %}
 </header>
 </body>
 </html>

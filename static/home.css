@@ -105,3 +105,27 @@
     color: #1a9126;
     font-size: 65px
 }
+.container {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  align-items: start;
+}
+
+.card {
+  background-color: #c8f7e5; /* light mint green */
+  padding: 20px;
+  border-radius: 15px;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.card p {
+  text-align: justify;
+  line-height: 1.6;
+}

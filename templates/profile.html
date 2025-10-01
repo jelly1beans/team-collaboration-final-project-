@@ -6,6 +6,35 @@
   <title>User Profile</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='pstyle.css') }}">
 </head>
+<style>.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
+
+.flash-message {
+  background-color: #f44336;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+</style>
 <body><!-- Navigation -->
      <nav class="navbar">
     <div class="logo-container">
@@ -18,7 +47,7 @@
       <li><a href="#">CONTACT</a></li>
     </ul>
     <ul class="nav-menu-right">
-      <li><a href="{{ url_for('landing_page') }}">LOG OUT</a></li>
+      <li><a href="{{ url_for('logout') }}">LOG OUT</a></li>
       <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
   </nav>
@@ -45,7 +74,6 @@
         <button type="submit" id="deleteBtn" name="action-btn" value="delete-btn">Delete</button>
         <button type="button" id="updateBtn">Update</button>
         <button type="submit" id="saveBtn" name="action-btn" value="save-btn" disabled>Save</button>
-        <button type="button" id="addContactBtn">Add Contact</button>
       </div>
     </div>
     <!-- Details Section -->
@@ -59,19 +87,6 @@
         <label>Contact number:</label>
         <input type="text" id="contact" name="contact_number" value="{{ profile.Contact if profile else '' }}" readonly>
       </div>
-
-      <!-- Extra Contacts -->
-      <div id="extraContacts">
-        {% if contacts %}
-          {% for c in contacts %}
-            <div class="input-box">
-              <label>Additional Contact:</label>
-              <input type="text" name="extra_contacts" value="{{ c.Contact_number }}" readonly>
-            </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-
       <div class="input-box">
         <label>Email:</label>
         <input type="email" id="email" name="email" value="{{ profile.Email if profile else '' }}" readonly>
@@ -103,13 +118,19 @@
     </div>
   </div>
 </div>
+{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-message-container">
+                        {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                     </div>
+                {% endif %}
+            {% endwith %}
 <script>
   const updateBtn = document.getElementById("updateBtn");
   const saveBtn = document.getElementById("saveBtn");
   const deleteBtn = document.getElementById("deleteBtn");
-  const addContactBtn = document.getElementById("addContactBtn");
-
-  const inputs = document.querySelectorAll("#name, #contact, #email, #extraContacts input");
 
   // Lock inputs on load
   window.addEventListener("load", () => {
@@ -130,16 +151,6 @@
     }
   });
 
-  // Add new contact field
-  addContactBtn.addEventListener("click", () => {
-    const div = document.createElement("div");
-    div.classList.add("input-box");
-    div.innerHTML = `
-      <label>Additional Contact:</label>
-      <input type="text" name="extra_contacts" placeholder="Enter another contact number">
-    `;
-    document.getElementById("extraContacts").appendChild(div);
-  });
 </script>
 
 </body>

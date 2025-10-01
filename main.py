@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for,flash, session, send_file
+from admin import admin_bp
 import pymysql, io
 app = Flask (__name__)
+app.register_blueprint(admin_bp)
 app.secret_key = 'your_secret_key'
 SESSION_USER_ID = 'user_id'
 
@@ -103,26 +105,22 @@ def profile_page():
     user_id = session.get('user_id')
     if not user_id:
         flash("Please log in to view your profile.")
-        return redirect(url_for('login_page'))
+        return redirect(url_for('landing_page'))
 
     cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
     profile = cursor.fetchone()
 
-    cursor.execute("""SELECT c.Contact_id, c.Contact_number FROM contacts c JOIN profile p ON c.Profile_id = p.Profile_id 
-    WHERE p.User_id = %s""", (user_id,))
-    contacts = cursor.fetchall()
-
     cursor.execute("SELECT * FROM appointment WHERE User_id = %s", (user_id,))
     appointments = cursor.fetchall()
 
-    return render_template("profile.html", profile=profile, contacts=contacts, appointments=appointments)
+    return render_template("profile.html", profile=profile, appointments=appointments)
 
 @app.route("/profile", methods=["POST"])
 def edit_profile_page():
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to edit your profile.")
-        return redirect(url_for("login_page"))
+        return redirect(url_for("landing_page"))
 
     action = request.form.get("action-btn")
     fullname = request.form.get("fullname")
@@ -160,17 +158,6 @@ def edit_profile_page():
             )
         connection.commit()
         flash("Profile saved.")
-
-    elif action == "add-contact-btn":
-        extra_contact = request.form.get("extra_contact")
-        if extra_contact:
-            cursor.execute(
-                "INSERT INTO contacts (user_id, contact_number) VALUES (%s, %s)",
-                (user_id, extra_contact),
-            )
-            connection.commit()
-            flash("Extra contact added.")
-
     return redirect(url_for("profile_page"))
 
 
@@ -179,7 +166,7 @@ def get_profile_image(user_id):
     cursor.execute("SELECT Image FROM profile WHERE User_id = %s", (user_id,))
     profile = cursor.fetchone()
     if profile and profile['Image']:
-        return send_file(io.BytesIO(profile['Image']), mimetype='image/jpeg')
+        return send_file(io.BytesIO(profile['Image']), mimetype='Image/jpeg')
     else:
         return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
 
@@ -225,7 +212,7 @@ def appointment_page():
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in first.")
-        return redirect(url_for("login_page"))
+        return redirect(url_for("landing_page"))
 
     fullname = request.form["fullname"]
     gender = request.form["gender"]
@@ -250,7 +237,7 @@ def cancel_appointment(appt_id):
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to cancel appointments.")
-        return redirect(url_for("login_page"))
+        return redirect(url_for("landing_page"))
     cursor.execute(
         "DELETE FROM appointment WHERE appointment_id=%s AND user_id=%s",(appt_id, user_id))
     connection.commit()
@@ -267,7 +254,6 @@ def cancel_appointment(appt_id):
 def policy_page():
     return render_template("privacy-policy.html")
 
-## admin ##
 @app.route("/Admin")
 def admin_page():
     return render_template("admin.html")
