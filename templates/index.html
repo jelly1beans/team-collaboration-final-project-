@@ -16,7 +16,7 @@
 }
 
 .flash-message {
-  background-color: #f44336;
+  background-color: #18ab3f;
   color: white;
   padding: 15px 25px;
   margin-bottom: 10px;
@@ -41,22 +41,21 @@
     <ul class="nav-menu">
       <li><a href="#">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
-      <li><a href="#">SERVICE</a></li>
+      <li><a href="#mainSection">SERVICE</a></li>
       <li><a href="#">CONTACT</a></li>
     </ul>
      <ul class="nav-menu-right">
       <li><a href="{{ url_for('landing_page') }}">PATIENT</a></li>
-      <li><a href="{{ url_for('admin_page') }}">ADMIN</a></li>
+      <li><a href="{{ url_for('admin_page') }}">ASSISTANT</a></li>
     </ul>
   </nav>
 
         <div class="content">
-            <h1>PWDs<br><span>Health</span> <br>Care</h1>
-            <p class="par">The PWD System is an integrated platform designed to efficiently manage
-                <br> records, services, and benefits for Persons With Disabilities.
-                <br> It streamlines registration, verification, and access to assistance, ensuring
-                <br>transparency, inclusivity, and improved service delivery for both beneficiaries and service providers
-            </p>
+           <div class="notes-content">
+                <h1>Accessible Optimology Eye Healthcare:</h1>
+                <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
+                <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
+            </div>
 
                 <form action="/SignUp" method="post" autocomplete="off">
                 <div class="form">
@@ -87,5 +86,106 @@
                 {% endif %}
             {% endwith %}
 </header>
+<h1 class="section-title">What We Offer</h1>
+<section id="mainSection" class="card-container">
+    <div class="card">
+      <h3>Nearsightedness</h3>
+      <p>Difficulty seeing distant objects clearly.</p>
+      <button class="view-btn" onclick="showDoctors('nearsightedness')">View More</button>
+    </div>
+
+    <div class="card">
+      <h3>Farsightedness</h3>
+      <p>Difficulty focusing on close objects.</p>
+      <button class="view-btn" onclick="showDoctors('farsightedness')">View More</button>
+    </div>
+
+    <div class="card">
+      <h3>Astigmatism</h3>
+      <p>Blurred vision caused by irregular cornea shape.</p>
+      <button class="view-btn" onclick="showDoctors('astigmatism')">View More</button>
+    </div>
+
+    <div class="card">
+      <h3>Cataract</h3>
+      <p>Clouding of the eye’s lens causing blurry vision.</p>
+      <button class="view-btn" onclick="showDoctors('cataract')">View More</button>
+    </div>
+
+    <div class="card">
+      <h3>Presbyopia</h3>
+      <p>Age-related loss of near vision.</p>
+      <button class="view-btn" onclick="showDoctors('presbyopia')">View More</button>
+    </div>
+  </section>
+
+  <!-- Doctors Section -->
+  <section id="doctorList">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <h2 id="doctorTitle">Available Doctors</h2>
+    <div id="doctorCards"></div>
+  </section>
+
+  <script>
+    // Doctor data grouped by illness
+    const doctorData = {
+      nearsightedness: [
+        { name: "Dr. Alice Smith", specialty: "Ophthalmologist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
+        { name: "Dr. John Cruz", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922561.png" }
+      ],
+      farsightedness: [
+        { name: "Dr. Maria Lopez", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" },
+        { name: "Dr. Daniel Reyes", specialty: "Vision Care Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" }
+      ],
+      astigmatism: [
+        { name: "Dr. Anne Robles", specialty: "Cornea Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
+        { name: "Dr. Mark Villanueva", specialty: "Ophthalmologist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" }
+      ],
+      cataract: [
+        { name: "Dr. Grace Dela Cruz", specialty: "Cataract Surgeon", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
+        { name: "Dr. Leo Ramos", specialty: "Eye Surgeon", img: "https://cdn-icons-png.flaticon.com/512/2922/2922561.png" }
+      ],
+      presbyopia: [
+        { name: "Dr. Angela Mendoza", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" },
+        { name: "Dr. Carlo Fernandez", specialty: "Eye Care Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" }
+      ]
+    };
+
+    function showDoctors(illness) {
+  const main = document.getElementById('mainSection');
+  const list = document.getElementById('doctorList');
+  const doctorCards = document.getElementById('doctorCards');
+  const title = document.getElementById('doctorTitle');
+  
+  // Clear previous list
+  doctorCards.innerHTML = '';
+
+  // Update title (no header reference)
+  title.textContent = `Doctors for ${illness.charAt(0).toUpperCase() + illness.slice(1)}`;
+
+  // Generate doctor cards dynamically
+  doctorData[illness].forEach(doc => {
+    const div = document.createElement('div');
+    div.className = 'doctor-card';
+    div.innerHTML = `
+      <img src="${doc.img}" alt="${doc.name}">
+      <div>
+        <h4>${doc.name}</h4>
+        <p>${doc.specialty}</p>
+      </div>
+    `;
+    doctorCards.appendChild(div);
+  });
+
+  // Switch visibility
+  main.style.display = 'none';
+  list.style.display = 'block';
+}
+
+function goBack() {
+  document.getElementById('doctorList').style.display = 'none';
+  document.getElementById('mainSection').style.display = 'flex';
+}
+  </script>
 </body>
 </html>

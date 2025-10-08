@@ -1,9 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from main import cursor
-import pymysql
-admin_bp = Blueprint('admin', __name__)
+from flask import Blueprint, render_template
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin',)
 
-@admin_bp.route('/Admin')
+@admin_bp.route('/')
 def admin_page():
     return render_template('admin.html')
 
