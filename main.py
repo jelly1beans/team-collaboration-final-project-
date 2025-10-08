@@ -73,7 +73,7 @@ def login():
         return redirect(url_for('login_page'))
     else:
         session['user_id'] = user['User_id']   # ✅ Save login session
-        flash("Login successful!")
+        flash("Login successfully!")
         return redirect(url_for('home_page'))
 
 ## forgot password route ##  
@@ -115,6 +115,7 @@ def profile_page():
 
     return render_template("profile.html", profile=profile, appointments=appointments)
 
+
 @app.route("/profile", methods=["POST"])
 def edit_profile_page():
     user_id = session.get("user_id")
@@ -127,11 +128,15 @@ def edit_profile_page():
     contact_number = request.form.get("contact_number")
     email = request.form.get("email")
     file = request.files.get("profileImage")
-    image_data = file.read() if file else None
+    if not fullname or not contact_number or not email:
+        flash("Full name, contact number, and email are required.")
+        return redirect(url_for("profile_page"))
+    # Read image only if uploaded
+    image_data = file.read() if file and file.filename else None
 
     if action == "delete-btn":
         # delete profile + user
-        cursor.execute("DELETE FROM profile WHERE user_id = %s", (user_id,))
+        cursor.execute("DELETE FROM profile WHERE User_id = %s", (user_id,))
         cursor.execute("DELETE FROM user WHERE User_id = %s", (user_id,))
         connection.commit()
         session.clear()
@@ -139,25 +144,37 @@ def edit_profile_page():
         return redirect(url_for("landing_page"))
 
     elif action == "save-btn":
-        # save/update profile info
         cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
         existing = cursor.fetchone()
 
         if existing:
-            cursor.execute(
-                """UPDATE profile 
-                   SET Full_name=%s, Contact=%s, Email=%s, Image=%s 
-                   WHERE User_id=%s""",
-                (fullname, contact_number, email, image_data, user_id),
-            )
+            # If new image uploaded, update it too
+            if image_data:
+                cursor.execute(
+                    """UPDATE profile 
+                       SET Full_name=%s, Contact=%s, Email=%s, Image=%s 
+                       WHERE User_id=%s""",
+                    (fullname, contact_number, email, image_data, user_id),
+                )
+            else:
+                # Keep old image if not replaced
+                cursor.execute(
+                    """UPDATE profile 
+                       SET Full_name=%s, Contact=%s, Email=%s 
+                       WHERE User_id=%s""",
+                    (fullname, contact_number, email, user_id),
+                )
         else:
+            # Insert new profile row (must include Image, even if None)
             cursor.execute(
                 """INSERT INTO profile (Full_name, Contact, Email, Image, User_id) 
                    VALUES (%s, %s, %s, %s, %s)""",
                 (fullname, contact_number, email, image_data, user_id),
             )
+
         connection.commit()
         flash("Profile saved.")
+
     return redirect(url_for("profile_page"))
 
 
@@ -165,11 +182,11 @@ def edit_profile_page():
 def get_profile_image(user_id):
     cursor.execute("SELECT Image FROM profile WHERE User_id = %s", (user_id,))
     profile = cursor.fetchone()
+
     if profile and profile['Image']:
-        return send_file(io.BytesIO(profile['Image']), mimetype='Image/jpeg')
+        return send_file(io.BytesIO(profile['Image']), mimetype='image/jpeg')
     else:
         return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
-
 
 ## home page ##
 @app.route("/Home")
