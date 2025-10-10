@@ -40,7 +40,7 @@
     </div>
     <ul class="nav-menu">
       <li><a href="#">HOME</a></li>
-      <li><a href="#">ABOUT US</a></li>
+      <li><a href="#missionVisionSection">ABOUT US</a></li>
       <li><a href="#mainSection">SERVICE</a></li>
       <li><a href="#">CONTACT</a></li>
     </ul>
@@ -57,23 +57,23 @@
                 <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
             </div>
 
-                <form action="/SignUp" method="post" autocomplete="off">
-                <div class="form">
-                <h3 style="text-align: center; font-size: 30px;">SignUp</h3>
+<form action="{{ url_for('signup_page') }}" method="post" autocomplete="off">
+  <input type="hidden" name="next" value="{{ next_page }}">
 
-                <input type="text" name="name" placeholder="Your Name" required autocomplete="off" />
+  <div class="form">
+    <h3 style="text-align: center; font-size: 30px;">SignUp</h3>
 
-                <input type="email" name="email" placeholder="Your Email" required autocomplete="off" />
+    <input type="text" name="name" placeholder="Your Name" required autocomplete="off" />
+    <input type="email" name="email" placeholder="Your Email" required autocomplete="off" />
+    <input type="password" name="password" placeholder="Password" required autocomplete="off" />
 
-                <input type="password" name="password" placeholder="Password" required autocomplete="off" />
+    <button class="signup_btn" type="submit">SignUp</button>
 
-                <button class="signup_btn" type="submit">SignUp</a></button>
-
-                <p class="statement">
-                    Have already an account? 
-                <a href="{{url_for('login_page')}}"><u>Login here</u></a>
-        </p>
-    </div>
+    <p class="statement">
+      Have already an account?
+      <a href="{{ url_for('login_page', next=next_page) }}"><u>Login here</u></a>
+    </p>
+  </div>
 </form>
         </div>
         {% with messages = get_flashed_messages() %}
@@ -86,6 +86,39 @@
                 {% endif %}
             {% endwith %}
 </header>
+<br>
+  <!-- Mission and Vision Section -->
+  
+<section class="mission-vision-container" id="missionVisionSection">
+  <br>
+  <h1 class="section-title">Our Mission & Vision</h1>
+    <div class="section">
+      <h2 class="title">MISSION</h2>
+      <div class="box">
+        <p>
+          Our mission is to deliver an intuitive and efficient digital platform for Accessible Optiomology eye Healthcare, 
+          streamlining appointment scheduling and comprehensive patient management. We are dedicated to connecting patients 
+          with specialized eye care professionals, enhancing health outcomes, and fostering a patient-centric ecosystem 
+          that ensures timely and personalized care for all.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="title">VISION</h2>
+      <div class="box">
+        <p>
+          To foster a vibrant and healthy Filipino society by guaranteeing equitable access to specialized eye care, 
+          leveraging technology to make ophthalmological services convenient, efficient, and deeply personalized for every patient.
+        </p>
+      </div>
+    </div>
+
+  </section>
+<br><br>
+
+  <!-- Services Section -->
+
 <h1 class="section-title">What We Offer</h1>
 <section id="mainSection" class="card-container">
     <div class="card">
@@ -127,65 +160,96 @@
   </section>
 
   <script>
-    // Doctor data grouped by illness
-    const doctorData = {
-      nearsightedness: [
-        { name: "Dr. Alice Smith", specialty: "Ophthalmologist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
-        { name: "Dr. John Cruz", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922561.png" }
-      ],
-      farsightedness: [
-        { name: "Dr. Maria Lopez", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" },
-        { name: "Dr. Daniel Reyes", specialty: "Vision Care Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" }
-      ],
-      astigmatism: [
-        { name: "Dr. Anne Robles", specialty: "Cornea Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
-        { name: "Dr. Mark Villanueva", specialty: "Ophthalmologist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" }
-      ],
-      cataract: [
-        { name: "Dr. Grace Dela Cruz", specialty: "Cataract Surgeon", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" },
-        { name: "Dr. Leo Ramos", specialty: "Eye Surgeon", img: "https://cdn-icons-png.flaticon.com/512/2922/2922561.png" }
-      ],
-      presbyopia: [
-        { name: "Dr. Angela Mendoza", specialty: "Optometrist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922656.png" },
-        { name: "Dr. Carlo Fernandez", specialty: "Eye Care Specialist", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png" }
-      ]
-    };
-
+  // Doctor data grouped by illness
+  const doctorData = {
+    nearsightedness: [
+      { name: "Dr. Anna Smith", specialty: "Ophthalmologist - Myopia Specialist", img: "{{ url_for('static', filename='image/doc anna.jpg') }}" },
+      { name: "Dr. James Lee", specialty: "Optometrist - Vision Correction", img: "{{ url_for('static', filename='image/doctor2.jpg') }}" },
+      { name: "Dr. Charles Garcia", specialty: "Refractive Surgery Specialist", img: "{{ url_for('static', filename='image/doctor3.jpg') }}" }
+    ],
+    farsightedness: [
+      { name: "Dr. Hans Smith", specialty: "Opthalmologist - Hyperopia Specialist", img: "{{ url_for('static', filename='image/doc hans.jpg') }}" },
+      { name: "Dr. Josh Lee", specialty: "Optometrist - Vision Correction", img: "{{ url_for('static', filename='image/doc josh.jpg') }}" },
+      { name: "Dr. Sean Garcia", specialty: "Refractive Surgery Specialist", img: "{{ url_for('static', filename='image/doc sean.jpg') }}" }
+    ],
+    astigmatism: [
+      { name: "Dr. Samantha Smith", specialty: "Optometrist - Astigmatism Correction", img: "{{ url_for('static', filename='image/doc susan.jpg') }}" },
+      { name: "Dr. Hannah Lee", specialty: "Opthalmologist - Corneal Specialist", img: "{{ url_for('static', filename='image/doc hannah.jpg') }}" },
+      { name: "Dr. Raisy Garcia", specialty: "Contact Lens Specialist", img: "{{ url_for('static', filename='image/doc raisy.jpg') }}" }
+    ],
+    cataract: [
+      { name: "Dr. Charles Garcia", specialty: "Ophthalmologist, Cataract Surgery Specialist", img: "{{ url_for('static', filename='image/doctor3.jpg') }}" },
+      { name: "Dr. James Lee", specialty: "Senior Eye Care Specialist", img: "{{ url_for('static', filename='image/doctor2.jpg') }}" },
+      { name: "Dr. Leo Marvin", specialty: "Ophthalmic Surgeon (Lens Replacement)", img: "{{ url_for('static', filename='image/DOCTOR1.jpg') }}" }
+    ],
+    presbyopia: [
+      { name: "Dr. Hans Smith", specialty: "Opthalmologist - Age-related Vision Specialist", img: "{{ url_for('static', filename='image/doc hans.jpg') }}" },
+      { name: "Dr. Sean Lee", specialty: "Optometrist - Progressive Lens Expert", img: "{{ url_for('static', filename='image/doc sean.jpg') }}" },
+      { name: "Dr. Raisy Garcia", specialty: "Refractive Surgery Specialist(Multifocal Implants)", img: "{{ url_for('static', filename='image/doc sean.jpg') }}" }
+    ]
+  };
     function showDoctors(illness) {
-  const main = document.getElementById('mainSection');
-  const list = document.getElementById('doctorList');
-  const doctorCards = document.getElementById('doctorCards');
-  const title = document.getElementById('doctorTitle');
-  
-  // Clear previous list
-  doctorCards.innerHTML = '';
+    const main = document.getElementById('mainSection');
+    const list = document.getElementById('doctorList');
+    const doctorCards = document.getElementById('doctorCards');
+    const title = document.getElementById('doctorTitle');
 
-  // Update title (no header reference)
-  title.textContent = `Doctors for ${illness.charAt(0).toUpperCase() + illness.slice(1)}`;
+    doctorCards.innerHTML = '';
+    title.textContent = `Doctors for ${illness.charAt(0).toUpperCase() + illness.slice(1)}`;
 
-  // Generate doctor cards dynamically
-  doctorData[illness].forEach(doc => {
-    const div = document.createElement('div');
-    div.className = 'doctor-card';
-    div.innerHTML = `
-      <img src="${doc.img}" alt="${doc.name}">
-      <div>
-        <h4>${doc.name}</h4>
-        <p>${doc.specialty}</p>
-      </div>
-    `;
-    doctorCards.appendChild(div);
-  });
+    doctorData[illness].forEach(doc => {
+      const div = document.createElement('div');
+      div.className = 'doctor-card';
+      div.innerHTML = `
+        <img src="${doc.img}" alt="${doc.name}">
+        <div>
+          <h4>${doc.name}</h4>
+          <p>${doc.specialty}</p>
+          <button class="book-btn" onclick="bookAppointment('${doc.name}')">Book Appointment</button>
+        </div>
+      `;
+      doctorCards.appendChild(div);
+    });
 
-  // Switch visibility
-  main.style.display = 'none';
-  list.style.display = 'block';
+    main.style.display = 'none';
+    list.style.display = 'block';
+  }
+
+  function goBack() {
+    document.getElementById('doctorList').style.display = 'none';
+    document.getElementById('mainSection').style.display = 'flex';
+  }
+
+  // ✅ Login check before booking
+  function bookAppointment(doctorName) {
+  // Store chosen doctor & service
+  sessionStorage.setItem("selectedDoctor", doctorName);
+
+  let selectedService = "";
+  for (const [service, doctors] of Object.entries(doctorData)) {
+    if (doctors.some(doc => doc.name === doctorName)) {
+      selectedService = service.charAt(0).toUpperCase() + service.slice(1);
+      break;
+    }
+  }
+  sessionStorage.setItem("selectedService", selectedService);
+
+  // ✅ Check login status
+  fetch("/check_login")
+    .then(response => response.json())
+    .then(data => {
+      if (data.logged_in) {
+        // Logged in → go directly to appointment page
+        window.location.href = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
+      } else {
+        // Not logged in → redirect to login page with next parameter
+        const nextPage = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
+        window.location.href = `/Login?next=${encodeURIComponent(nextPage)}`;
+      }
+    });
 }
 
-function goBack() {
-  document.getElementById('doctorList').style.display = 'none';
-  document.getElementById('mainSection').style.display = 'flex';
-}
-  </script>
+</script>
+
 </body>
 </html>

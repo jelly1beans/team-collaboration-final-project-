@@ -81,6 +81,30 @@
   margin-bottom: 15px;
   color: #4ea076;
 }
+.mission-vision-container {
+  max-width: 900px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.title {
+  color: #1e5b24;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.box {
+  background-color: #1e5b24;
+  color: white;
+  border-radius: 25px;
+  padding: 25px 40px;
+  line-height: 1.6;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 .form{
     width: 270px;
     height: 400px;
@@ -148,7 +172,7 @@ form input::placeholder{
     font-size: 15px;
 }
 .signup_btn:hover{
-    background-color: #fff;
+    background-color:#8ede8a;
 }
 
 form p {
@@ -173,68 +197,121 @@ form p a {
       justify-content: center;
       margin: 40px;
       gap: 20px;
-    }
+}
 
-    .card {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 260px;
-      padding: 25px;
-      text-align: center;
-      transition: transform 0.2s;
-    }
+.card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 260px;
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.2s;
+}
 
-    .card:hover {
-      transform: scale(1.05);
-    }
+.card:hover {
+  transform: scale(1.05);
+}
 
-    .view-btn, .back-btn {
-      background-color: #0f7809;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
+.view-btn {
+  background-color: #0f7809;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
 
-    .view-btn:hover, .back-btn:hover {
-      background-color: #0f7809;
-    }
+.view-btn:hover {
+  background-color: #8ede8a;
+}
 
-    #doctorList {
-      display: none;
-      padding: 20px;
-      text-align: center;
-    }
+#doctorList {
+  display: none;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f9fafb;
+}
 
-    .doctor-card {
-      display: inline-block;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 200px;
-      padding: 20px;
-      margin: 10px;
-      text-align: center;
-    }
+#doctorTitle {
+  font-size: 32px;
+  color: #0f7809;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
 
-    .doctor-card img {
-      width: 80px;
-      border-radius: 50%;
-    }
+.doctor-card {
+  display: inline-block;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 320px;
+  margin: 20px;
+  text-align: center;
+  padding: 25px 15px;
+  transition: transform 0.2s ease-in-out;
+}
 
-    .back-btn {
-      margin-bottom: 20px;
-    }
+.doctor-card:hover {
+  transform: translateY(-5px);
+}
 
-    header {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .section-title {
+.doctor-card img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.doctor-card h4 {
+  font-size: 20px;
+  color: #146c43;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.doctor-card p {
+  color: #4b5563;
+  font-size: 16px;
+  margin: 0;
+}
+.book-btn {
+  background-color: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.book-btn:hover {
+  background-color: #8ede8a;
+  transform: scale(1.05);
+}
+
+
+.back-btn {
+  display: inline-block;
+  margin-bottom: 20px;
+  background-color: #0f7809;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #8ede8a;
+}
+.section-title {
   text-align: center;
   font-size: 32px;
   color: #0f7809;

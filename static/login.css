@@ -37,7 +37,21 @@
 .nav-menu li a:hover {
   color:#4CAF50
 }
-
+.nav-menu-right {
+  gap: 50px;
+  padding: 10px 30px;
+  display: flex;
+  list-style: none;
+  margin-left: auto;
+}
+.nav-menu-right li a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+.nav-menu-right li a:hover {
+  color:#4CAF50
+}
 .content{
     width: 1200px;
     height: auto;
@@ -127,7 +141,7 @@ form input::placeholder{
     font-size: 15px;
 }
 .login_btn:hover{
-    background-color: #fff;
+    background-color: #8ede8a;
 }
 .login_btn a{
     text-decoration: none;
@@ -147,6 +161,30 @@ form input::placeholder{
     transition: .3s ease;
 }
 .up_btn:hover {
-    background-color: #fafafa;
+    background-color: #8ede8a;
+}
+.mission-vision-container {
+  max-width: 900px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.title {
+  color: #1e5b24;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.box {
+  background-color: #1e5b24;
+  color: white;
+  border-radius: 25px;
+  padding: 25px 40px;
+  line-height: 1.6;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 

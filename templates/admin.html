@@ -1,19 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Webpage Design</title>
-    <link rel="stylesheet" href="{{url_for('static', filename = 'admin.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'login.css')}}">
+    <title>Document</title>
+    <style>.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
+
+.flash-message {
+  background-color:#18ab3f;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+</style>
 </head>
 <body>
-    <nav class="navbar">
+  <header>
+      <nav class="navbar">
     <div class="logo-container">
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
     <ul class="nav-menu">
       <li><a href="#">HOME</a></li>
-      <li><a href="#">ABOUT US</a></li>
-      <li><a href="#">SERVICE</a></li>
-      <li><a href="#">CONTACT</a></li>
+      <li><a href="#missionVisionSection">ABOUT US</a></li>
     </ul>
      <ul class="nav-menu-right">
       <li><a href="{{ url_for('landing_page') }}">PATIENT</a></li>
@@ -21,34 +51,62 @@
     </ul>
   </nav>
         <div class="content">
-            <h1>PWDs<br><span>Health</span> <br>Care</h1>
-            <p class="par">The PWD System is an integrated platform designed to efficiently manage
-                <br> records, services, and benefits for Persons With Disabilities.
-                <br> It streamlines registration, verification, and access to assistance, ensuring
-                <br>transparency, inclusivity, and improved service delivery for both beneficiaries and service providers
-            </p>
-
-                <form action="/SignUp" method="post" autocomplete="off">
+            <div class="notes-content">
+                <h1>Accessible Optimology Eye Healthcare:</h1>
+                <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
+                <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
+            </div>
+                <form action="/ALogIn" method="POST">
                 <div class="form">
-                <h3 style="text-align: center; font-size: 30px;">SignUp</h3>
+                <h3 style="text-align: center; font-size: 30px;">LogIn</h3>
 
-                <input type="text" name="name" placeholder="Your Name" required autocomplete="off" />
+                <input type="email" name="email" placeholder="Your Email" required />
+                <input type="password" name="password" placeholder="Your Password" required />
 
-                <input type="email" name="email" placeholder="Your Email" required autocomplete="off" />
+                <button class="login_btn" type="submit">Login</button>
+                <br><br>
+                <a href="{{ url_for('forgot_password') }}" style="color:white; ">Forgot Password?</a>
+                </div>
+                </form>
 
-                <input type="password" name="password" placeholder="Password" required autocomplete="off" />
-
-                <button class="signup_btn" type="submit">SignUp</a></button>
-
-                <p class="statement">
-                    Have already an account? 
-                <a href="{{url_for('login_page')}}"><u>Login here</u></a>
-        </p>
-    </div>
-</form>
-
-
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-message-container">
+                            {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                        </div>
+                            {% endif %}
+                {% endwith %}
         </div>
-</header>
+        </header>
+        <br>
+    <section class="mission-vision-container" id="missionVisionSection">
+  <br><br>
+  <h1 class="section-title">Our Mission & Vision</h1>
+  <br>
+    <div class="section">
+      <h2 class="title">MISSION</h2>
+      <div class="box">
+        <p>
+          Our mission is to deliver an intuitive and efficient digital platform for Accessible Optiomology eye Healthcare, 
+          streamlining appointment scheduling and comprehensive patient management. We are dedicated to connecting patients 
+          with specialized eye care professionals, enhancing health outcomes, and fostering a patient-centric ecosystem 
+          that ensures timely and personalized care for all.
+        </p>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="title">VISION</h2>
+      <div class="box">
+        <p>
+          To foster a vibrant and healthy Filipino society by guaranteeing equitable access to specialized eye care, 
+          leveraging technology to make ophthalmological services convenient, efficient, and deeply personalized for every patient.
+        </p>
+      </div>
+    </div>
+
+  </section>
+    
 </body>
 </html>

@@ -1,0 +1,43 @@
+body {
+  background-color: #114d20;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  text-decoration: underline;
+  margin: 30px 0;
+}
+
+table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 90%;
+}
+
+th, td {
+  border: 2px solid white;
+  padding: 15px;
+}
+
+.accept-btn, .decline-btn {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  color: #114d20;
+  font-weight: bold;
+}
+
+.accept-btn {
+  background-color: #9fdc9b;
+}
+
+.decline-btn {
+  background-color: #76b87a;
+}
+
+button:hover {
+  opacity: 0.8;
+}
