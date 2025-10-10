@@ -135,5 +135,33 @@
       }
     });
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Retrieve doctor/service info saved earlier
+  const selectedDoctor = sessionStorage.getItem("selectedDoctor");
+  const selectedService = sessionStorage.getItem("selectedService");
+
+  if (selectedService) {
+    const serviceSelect = document.getElementById("service");
+    const doctorSelect = document.getElementById("doctor");
+    const doctorField = document.getElementById("doctorField");
+
+    // Set the selected service
+    serviceSelect.value = selectedService;
+
+    // Trigger the event to populate doctor dropdown
+    const event = new Event("change");
+    serviceSelect.dispatchEvent(event);
+
+    // Wait for doctor dropdown to populate
+    setTimeout(() => {
+      if (selectedDoctor) {
+        doctorField.style.display = "block";
+        doctorSelect.value = selectedDoctor;
+      }
+    }, 200);
+  }
+});
+</script>
 </body>
 </html>

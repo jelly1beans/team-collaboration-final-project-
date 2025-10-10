@@ -1,9 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for,flash, session, send_file
-from admin import admin_bp
+from flask import Flask, render_template, request, redirect, url_for,flash, session, send_file, jsonify
 import pymysql, io
 app = Flask (__name__)
-app.register_blueprint(admin_bp)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'j4e_secret_key'
 SESSION_USER_ID = 'user_id'
 
 connection = pymysql.connect(
@@ -15,7 +13,7 @@ connection = pymysql.connect(
     )
 cursor = connection.cursor()
 
-## routes ##
+# ----------------- HOME PAGE -----------------
 @app.route("/")
 def landing_page():
     return render_template("index.html")
@@ -26,55 +24,87 @@ def logout():
     flash("You have been logged out.")
     return redirect(url_for('landing_page'))
 
+@app.route("/SignUp", methods=['GET', 'POST'])
+def signup_page():
+    next_page = request.args.get('next') or request.form.get('next')
 
-## signup route ##
-@app.route("/SignUp", methods=['POST'])
-def signup_process():
-    name = request.form.get("name")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    
-    cursor.execute("INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)",
-                   (name, email, password))  
-    connection.commit()
+    if request.method == 'POST':
+        name = request.form.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-    cursor.execute("SELECT User_id FROM user WHERE User_email = %s", (email,))
-    user = cursor.fetchone()
-    user_id = user['User_id']
-    session['user_id'] = user_id
+        cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            flash("Email already exists. Please log in instead.")
+            return redirect(url_for('login_page', next=next_page))
 
-    # auto create profile row
-    cursor.execute("INSERT INTO profile (Full_name, Email, Contact, User_id) VALUES (%s, %s, %s, %s)",
-                   (name, email, " ", user_id))
-    connection.commit()
+        cursor.execute(
+            "INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)",
+            (name, email, password)
+        )
+        connection.commit()
 
-    return redirect(url_for("home_page"))
+        cursor.execute("SELECT User_id FROM user WHERE User_email = %s", (email,))
+        user = cursor.fetchone()
+
+        if user:
+            session['user_id'] = user['User_id']
+            cursor.execute(
+                "INSERT INTO profile (Full_name, Email, Contact, User_id) VALUES (%s, %s, %s, %s)",
+                (name, email, " ", user['User_id'])
+            )
+            connection.commit()
+            flash("Account created successfully! Welcome!")
+
+            # ✅ If user came from Book Appointment
+            if next_page and next_page.startswith('/appointment'):
+                return redirect(next_page)
+
+            # Otherwise go home
+            return redirect(url_for('home_page'))
+
+        flash("Signup failed. Please try again.")
+        return redirect(url_for('signup_page'))
+
+    return render_template("index.html", next_page=next_page)
 
 
-## login route ##
-
-@app.route("/Login")
+@app.route('/Login', methods=['GET', 'POST'])
 def login_page():
-    return render_template("login.html")
+    next_page = request.args.get('next')
 
-@app.route('/LogIn', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
 
-    cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
-    user = cursor.fetchone()
+        cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
+        user = cursor.fetchone()
 
-    if not user:
-        flash("Email not found.")
-        return redirect(url_for('login_page'))
-    elif user['User_password'] != password:
-        flash("Incorrect password.")
-        return redirect(url_for('login_page'))
-    else:
-        session['user_id'] = user['User_id']   # ✅ Save login session
-        flash("Login successfully!")
-        return redirect(url_for('home_page'))
+        if not user:
+            flash("Email not found.")
+            return redirect(url_for('login_page', next=next_page))
+        elif user['User_password'] != password:
+            flash("Incorrect password.")
+            return redirect(url_for('login_page', next=next_page))
+        else:
+            session['user_id'] = user['User_id']
+            flash("Login successful!")
+
+            # ✅ Only go to appointment if they came from "Book Now"
+            if next_page and next_page.startswith('/appointment'):
+                return redirect(next_page)
+
+            # Otherwise always go to home page
+            return redirect(url_for('home_page'))
+
+    return render_template('login.html', next_page=next_page)
+
+@app.route("/check_login")
+def check_login():
+    return jsonify({"logged_in": 'user_id' in session})
+
+
 
 ## forgot password route ##  
   
@@ -271,9 +301,34 @@ def cancel_appointment(appt_id):
 def policy_page():
     return render_template("privacy-policy.html")
 
-@app.route("/Admin")
+###----------------- assistant page -----------------###
+@app.route("/Assistant")
 def admin_page():
     return render_template("admin.html")
+
+@app.route('/ALogIn', methods=['POST'])
+def alogin_page():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        cursor.execute("SELECT * FROM assistant WHERE User_email = %s", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            flash("Email not found.")
+            return redirect(url_for('login_page'))
+        elif user['User_password'] != password:
+            flash("Incorrect password.")
+            return redirect(url_for('login_page'))
+        else:
+            session['user_id'] = user['User_id']
+            flash("Login successful!")
+
+        return redirect(url_for('home_page'))
+    
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

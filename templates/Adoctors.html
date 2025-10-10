@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Appointments</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='Adoctors.css') }}">
+</head>
+<body>
+  <h1>DOCTORS’ APPOINTMENT</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>NAME</th>
+        <th>DATE</th>
+        <th>TIME</th>
+        <th>DESCRIPTION</th>
+        <th>STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appt in appointments %}
+      <tr>
+        <td>{{ appt.name }}</td>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time }}</td>
+        <td>{{ appt.description }}</td>
+        <td>
+          <form action="/update_status/{{ appt.id }}" method="post" style="display:inline;">
+            <button name="status" value="accepted" class="accept-btn">ACCEPT</button>
+          </form>
+          <form action="/update_status/{{ appt.id }}" method="post" style="display:inline;">
+            <button name="status" value="declined" class="decline-btn">DECLINE</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

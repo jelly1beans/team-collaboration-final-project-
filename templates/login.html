@@ -41,7 +41,7 @@
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
     <ul class="nav-menu">
-      <li><a href="#">HOME</a></li>
+      <li><a href="{{ url_for('landing_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
       <li><a href="#">SERVICE</a></li>
       <li><a href="#">CONTACT</a></li>
@@ -53,7 +53,7 @@
                 <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
                 <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
             </div>
-                <form action="/LogIn" method="POST">
+                <form action="/Login" method="POST">
                 <div class="form">
                 <h3 style="text-align: center; font-size: 30px;">LogIn</h3>
 
