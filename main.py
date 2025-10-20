@@ -128,7 +128,7 @@ def forgot_password():
 
     return render_template('forgot_password.html')
 
-## profile pages ##
+# profile pages ##
 
 @app.route("/Profile")
 def profile_page():
@@ -140,11 +140,15 @@ def profile_page():
     cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
     profile = cursor.fetchone()
 
-    cursor.execute("SELECT * FROM appointment WHERE User_id = %s", (user_id,))
+    cursor.execute("""
+        SELECT appointment_id, fullname, appt_date, appt_time, service, doctor, notes, status, decline_message
+        FROM appointment
+        WHERE User_id = %s
+        ORDER BY appt_date DESC
+    """, (user_id,))
     appointments = cursor.fetchall()
 
     return render_template("profile.html", profile=profile, appointments=appointments)
-
 
 @app.route("/profile", methods=["POST"])
 def edit_profile_page():
@@ -279,55 +283,129 @@ def appointment_page():
     flash("Appointment booked successfully.")
     return redirect(url_for("profile_page"))
 
+# cancel appointment route ##
+
 @app.route("/cancel_appointment/<int:appt_id>", methods=["POST"])
 def cancel_appointment(appt_id):
     user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to cancel appointments.")
         return redirect(url_for("landing_page"))
+
+    # Only allow cancel if appointment is 'Accepted'
+    cursor.execute("""
+        SELECT status FROM appointment 
+        WHERE appointment_id = %s AND user_id = %s
+    """, (appt_id, user_id))
+    appt = cursor.fetchone()
+
+    if not appt:
+        flash("Appointment not found.")
+        return redirect(url_for("profile_page"))
+
+    if appt["status"] != "Accepted":
+        flash("You can only cancel accepted appointments.")
+        return redirect(url_for("profile_page"))
+
     cursor.execute(
-        "DELETE FROM appointment WHERE appointment_id=%s AND user_id=%s",(appt_id, user_id))
+        "DELETE FROM appointment WHERE appointment_id=%s AND user_id=%s",
+        (appt_id, user_id)
+    )
     connection.commit()
-    if cursor.rowcount > 0:
-        flash("Appointment cancelled.")
-    else:
-        flash("Could not cancel appointment — not found or not yours.")
+    flash("Appointment cancelled successfully.")
     return redirect(url_for("profile_page"))
 
 
-## privacy policy page ##
+   ## privacy policy page ##
 
 @app.route("/Policy-Privacy")
 def policy_page():
     return render_template("privacy-policy.html")
 
-###----------------- assistant page -----------------###
+# ----------------- ASSISTANT CORNER ----------------- #
+
+def get_cursor():
+    return connection.cursor()
+
 @app.route("/Assistant")
-def admin_page():
+def assistant_page():
     return render_template("admin.html")
 
-@app.route('/ALogIn', methods=['POST'])
-def alogin_page():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+# Assistant login route ##
 
-        cursor.execute("SELECT * FROM assistant WHERE User_email = %s", (email,))
-        user = cursor.fetchone()
+@app.route("/assistant_login", methods=["POST"])
+def assistant_login():
+    email = request.form.get("email")
+    password = request.form.get("password")
 
-        if not user:
-            flash("Email not found.")
-            return redirect(url_for('login_page'))
-        elif user['User_password'] != password:
-            flash("Incorrect password.")
-            return redirect(url_for('login_page'))
-        else:
-            session['user_id'] = user['User_id']
-            flash("Login successful!")
+    cursor = get_cursor()
+    cursor.execute("SELECT * FROM assistant WHERE Assistant_email = %s", (email,))
+    assistant = cursor.fetchone()
 
-        return redirect(url_for('home_page'))
-    
+    if not assistant:
+        flash("Email not found.")
+        return redirect(url_for("assistant_page"))
+    elif assistant['Assistant_password'] != password:
+        flash("Incorrect password.")
+        return redirect(url_for("assistant_page"))
+    else:
+        session['assistant_id'] = assistant['Assistant_id']
+        flash("Assistant login successful!")
+        return redirect(url_for("view_appointments"))
 
+# View appointments route ##
+
+@app.route("/appointments-view", methods=["GET"])
+def view_appointments():
+    cursor = get_cursor()
+    sql = "SELECT * FROM appointment WHERE status = 'Pending'"
+    cursor.execute(sql)
+    appointments = cursor.fetchall()
+    return render_template("appointments-view.html", appointment=appointments)
+
+# Accept appointment route ##
+
+@app.route("/appointments-accept", methods=["POST"])
+def accept_appointment():
+    appointment_id = request.form.get("appointment_id")
+    if not appointment_id:
+        flash("No appointment ID provided.")
+        return redirect(url_for("view_appointments"))
+
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE appointment 
+        SET status = %s, decline_message = NULL 
+        WHERE appointment_id = %s
+    """, ("Accepted", appointment_id))
+    connection.commit()
+    flash("Appointment accepted successfully.")
+    return redirect(url_for("view_appointments"))
+
+# Decline appointment route ##
+
+@app.route("/appointments-decline", methods=["POST"])
+def decline_appointment():
+    appointment_id = request.form.get("appointment_id")
+    decline_message = request.form.get("decline_message")
+
+    if not appointment_id:
+        flash("No appointment ID provided.")
+        return redirect(url_for("view_appointments"))
+
+    if not decline_message or decline_message.strip() == "":
+        flash("Please provide a reason for declining.")
+        return redirect(url_for("view_appointments"))
+
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE appointment 
+        SET status = %s, decline_message = %s 
+        WHERE appointment_id = %s
+    """, ("Declined", decline_message, appointment_id))
+    connection.commit()
+    flash("Appointment declined with message.")
+    return redirect(url_for("view_appointments"))
 
 
 if __name__ == "__main__":
