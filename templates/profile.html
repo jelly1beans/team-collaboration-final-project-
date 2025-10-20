@@ -104,12 +104,30 @@
         {% for appt in appointments %}
           <div class="appt-item">
             <p>
-              {{ appt.service }} with {{ appt.doctor }} on {{ appt.appt_date }} at {{ appt.appt_time }}
+              <strong>{{ appt.service }}</strong> with {{ appt.doctor }} <br>
+              on <strong>{{ appt.appt_date }}</strong> at <strong>{{ appt.appt_time }}</strong>
             </p>
-            <!-- This form is independent (not nested) -->
-            <form action="{{ url_for('cancel_appointment', appt_id=appt.appointment_id) }}" method="post" style="display:inline;">
-              <button type="submit" class="cancel-btn" onclick="return confirm('Are you sure you want to cancel this appointment?');">Cancel</button>
-            </form>
+
+            {% if appt.status == "Pending" %}
+              <p class="status pending">Status: Pending</p>
+              <p class="note">Waiting for assistant confirmation...</p>
+
+            {% elif appt.status == "Accepted" %}
+              <p class="status accepted">Status: Accepted</p>
+              <form action="{{ url_for('cancel_appointment', appt_id=appt.appointment_id) }}" method="post" style="display:inline;">
+                <button type="submit" class="cancel-btn"
+                  onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                  Cancel
+                </button>
+              </form>
+
+            {% elif appt.status == "Declined" %}
+              <p class="status declined">Status: Declined</p>
+              <div class="decline-box">
+                <strong>Reason:</strong> {{ appt.decline_message or "No reason provided." }}
+              </div>
+              <p class="note">You cannot cancel declined appointments.</p>
+            {% endif %}
           </div>
         {% endfor %}
       {% else %}
@@ -118,6 +136,7 @@
     </div>
   </div>
 </div>
+
 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <div class="flash-message-container">
