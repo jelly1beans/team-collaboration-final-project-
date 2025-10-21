@@ -112,6 +112,24 @@ button:disabled {
 .consent input {
   margin-top: 5px;
 }
+.back-home-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #e9f3ff;
+  color: #43b61d;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+  z-index: 1000;
+}
+
+.back-home-btn:hover {
+  background: #067615;
+  color: #fff;
+}
 
 @media (max-width:680px) {
   form {
