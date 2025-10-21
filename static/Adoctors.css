@@ -1,4 +1,4 @@
-/* General Page Style */
+/* ------------------ General Page Style ------------------ */
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -6,7 +6,7 @@ body {
   color: white;
 }
 
-/* Header / Navbar */
+/* ------------------ Header / Navbar ------------------ */
 .navbar {
   display: flex;
   align-items: center;
@@ -30,10 +30,17 @@ body {
   letter-spacing: 5px;
 }
 
+/* ------------------ Menu (Three Dots) ------------------ */
 .menu {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.menu:hover {
+  transform: scale(1.1);
 }
 
 .dot {
@@ -43,7 +50,64 @@ body {
   border-radius: 50%;
 }
 
-/* Page Title */
+/* ------------------ Sidebar Navigation ------------------ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -360px; /* hidden by default */
+  width: 250px;
+  height: 100%;
+  background-color: #0f3615;
+  color: #fff;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.4);
+  transition: right 0.3s ease;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar.active {
+  right: 0;
+}
+
+.sidebar h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2a6c35;
+  padding-bottom: 10px;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  display: block;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.sidebar a:hover {
+  background: #1c6025;
+}
+
+.close-btn {
+  align-self: flex-end;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ccc;
+  margin-bottom: 10px;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: white;
+}
+
+/* ------------------ Page Title ------------------ */
 .page-title {
   text-align: center;
   text-decoration: underline;
@@ -51,7 +115,7 @@ body {
   margin: 40px 0 20px;
 }
 
-/* Appointment Table */
+/* ------------------ Appointment Table ------------------ */
 .appointment-table {
   width: 90%;
   margin: 0 auto;
@@ -73,42 +137,71 @@ body {
   color: white;
   font-weight: bold;
 }
- /* Optional: Add button styling if not already in Adoctors.css */
-    .action-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 2px;
-      transition: background-color 0.2s ease;
-    }
 
-    .accept-btn {
-      background-color: #28a745;
-    }
+/* ------------------ Buttons ------------------ */
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 2px;
+  transition: background-color 0.2s ease;
+}
 
-    .accept-btn:hover {
-      background-color: #197a2e;
-    }
+.accept-btn {
+  background-color: #28a745;
+}
 
-    .decline-btn {
-      background-color: #dc3545;
-    }
+.accept-btn:hover {
+  background-color: #197a2e;
+}
 
-    .decline-btn:hover {
-      background-color: #a80f1e;
-    }
+.decline-btn {
+  background-color: #dc3545;
+}
 
-    button[disabled] {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+.decline-btn:hover {
+  background-color: #a80f1e;
+}
 
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
+/* ------------------ Flash Message ------------------ */
+.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
 
-/* Table Responsiveness */
+.flash-message {
+  background-color: #18ab3f;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ------------------ Responsiveness ------------------ */
 @media (max-width: 768px) {
   .appointment-table {
     font-size: 14px;
@@ -117,5 +210,9 @@ body {
   .accept-btn, .decline-btn {
     padding: 8px 15px;
     font-size: 14px;
+  }
+
+  .sidebar {
+    width: 200px;
   }
 }

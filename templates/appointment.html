@@ -4,10 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Eye Clinic — Appointment Booking</title>
-  <link rel="stylesheet" href="{{url_for('static', filename = 'appointment.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='appointment.css') }}">
 </head>
 <body>
   <div class="container">
+
+    <!-- 🔙 Back to Home Button -->
+    <a href="{{ url_for('home_page') }}" class="back-home-btn">← Back to Home</a>
+
     <div class="card" role="region" aria-label="Appointment booking">
       <h1>Book an Appointment</h1>
       <p class="lead">Fill in your details below and choose a date & time. We'll contact you to confirm.</p>
@@ -80,7 +84,7 @@
           <label for="consent">
             I hereby agree and consent that <strong>Eye Clinic</strong> may collect, use, disclose, and process my personal 
             information set out in this form to help with my appointment booking, consultation, or request for services. 
-            View <a href="{{ url_for('policy_page') }}"target="_blank">Privacy Policy</a>.
+            View <a href="{{ url_for('policy_page') }}" target="_blank">Privacy Policy</a>.
           </label>
         </div>
       </form>
@@ -135,33 +139,34 @@
       }
     });
   </script>
+
   <script>
-document.addEventListener("DOMContentLoaded", function() {
-  // Retrieve doctor/service info saved earlier
-  const selectedDoctor = sessionStorage.getItem("selectedDoctor");
-  const selectedService = sessionStorage.getItem("selectedService");
+    document.addEventListener("DOMContentLoaded", function() {
+      // Retrieve doctor/service info saved earlier
+      const selectedDoctor = sessionStorage.getItem("selectedDoctor");
+      const selectedService = sessionStorage.getItem("selectedService");
 
-  if (selectedService) {
-    const serviceSelect = document.getElementById("service");
-    const doctorSelect = document.getElementById("doctor");
-    const doctorField = document.getElementById("doctorField");
+      if (selectedService) {
+        const serviceSelect = document.getElementById("service");
+        const doctorSelect = document.getElementById("doctor");
+        const doctorField = document.getElementById("doctorField");
 
-    // Set the selected service
-    serviceSelect.value = selectedService;
+        // Set the selected service
+        serviceSelect.value = selectedService;
 
-    // Trigger the event to populate doctor dropdown
-    const event = new Event("change");
-    serviceSelect.dispatchEvent(event);
+        // Trigger the event to populate doctor dropdown
+        const event = new Event("change");
+        serviceSelect.dispatchEvent(event);
 
-    // Wait for doctor dropdown to populate
-    setTimeout(() => {
-      if (selectedDoctor) {
-        doctorField.style.display = "block";
-        doctorSelect.value = selectedDoctor;
+        // Wait for doctor dropdown to populate
+        setTimeout(() => {
+          if (selectedDoctor) {
+            doctorField.style.display = "block";
+            doctorSelect.value = selectedDoctor;
+          }
+        }, 200);
       }
-    }, 200);
-  }
-});
-</script>
+    });
+  </script>
 </body>
 </html>

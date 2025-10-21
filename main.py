@@ -13,16 +13,22 @@ connection = pymysql.connect(
     )
 cursor = connection.cursor()
 
-# ----------------- HOME PAGE -----------------
+# ----------------- PATIENT CORNER ----------------- #
+
+#   landing page ##
 @app.route("/")
 def landing_page():
     return render_template("index.html")
+
+# logout route ##
 
 @app.route("/Logout")
 def logout():
     session.pop('user_id', None)
     flash("You have been logged out.")
     return redirect(url_for('landing_page'))
+
+# signup route ## 
 
 @app.route("/SignUp", methods=['GET', 'POST'])
 def signup_page():
@@ -33,46 +39,55 @@ def signup_page():
         email = request.form.get("email")
         password = request.form.get("password")
 
+        # ✅ Check if user already exists
         cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
         existing_user = cursor.fetchone()
         if existing_user:
             flash("Email already exists. Please log in instead.")
+            # Redirect to login, preserving 'next' parameter (e.g. appointment)
             return redirect(url_for('login_page', next=next_page))
 
+        # ✅ Create new user
         cursor.execute(
-            "INSERT INTO user (User_name, User_email, User_password) VALUES(%s, %s, %s)",
+            "INSERT INTO user (User_name, User_email, User_password) VALUES (%s, %s, %s)",
             (name, email, password)
         )
         connection.commit()
 
+        # ✅ Get user ID
         cursor.execute("SELECT User_id FROM user WHERE User_email = %s", (email,))
         user = cursor.fetchone()
 
         if user:
+            # Auto-login after signup
             session['user_id'] = user['User_id']
+
+            # Create empty profile
             cursor.execute(
                 "INSERT INTO profile (Full_name, Email, Contact, User_id) VALUES (%s, %s, %s, %s)",
                 (name, email, " ", user['User_id'])
             )
             connection.commit()
-            flash("Account created successfully! Welcome!")
+            flash("Account created successfully! You are now logged in.")
 
-            # ✅ If user came from Book Appointment
+            # ✅ Redirect logic
             if next_page and next_page.startswith('/appointment'):
                 return redirect(next_page)
-
-            # Otherwise go home
-            return redirect(url_for('home_page'))
+            else:
+                return redirect(url_for('home_page'))
 
         flash("Signup failed. Please try again.")
-        return redirect(url_for('signup_page'))
+        return redirect(url_for('signup_page', next=next_page))
 
+    # Render signup page with next-page memory
     return render_template("index.html", next_page=next_page)
 
 
+# login route ##
+
 @app.route('/Login', methods=['GET', 'POST'])
 def login_page():
-    next_page = request.args.get('next')
+    next_page = request.args.get('next') or request.form.get('next')
 
     if request.method == 'POST':
         email = request.form['email']
@@ -91,18 +106,21 @@ def login_page():
             session['user_id'] = user['User_id']
             flash("Login successful!")
 
-            # ✅ Only go to appointment if they came from "Book Now"
+            # ✅ Redirect to appointment if they came from Book Appointment
             if next_page and next_page.startswith('/appointment'):
                 return redirect(next_page)
 
-            # Otherwise always go to home page
+            # Otherwise, go home
             return redirect(url_for('home_page'))
 
     return render_template('login.html', next_page=next_page)
 
 @app.route("/check_login")
 def check_login():
-    return jsonify({"logged_in": 'user_id' in session})
+    if 'user_id' in session:
+        return jsonify({"logged_in": True})
+    else:
+        return jsonify({"logged_in": False})
 
 
 
@@ -167,11 +185,12 @@ def edit_profile_page():
         return redirect(url_for("profile_page"))
     # Read image only if uploaded
     image_data = file.read() if file and file.filename else None
-
+ 
     if action == "delete-btn":
         # delete profile + user
         cursor.execute("DELETE FROM profile WHERE User_id = %s", (user_id,))
         cursor.execute("DELETE FROM user WHERE User_id = %s", (user_id,))
+        cursor.execute("DELETE FROM appointment WHERE User_id = %s", (user_id,))
         connection.commit()
         session.clear()
         flash("Account and profile deleted.")
@@ -223,6 +242,7 @@ def get_profile_image(user_id):
         return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
 
 ## home page ##
+
 @app.route("/Home")
 def home_page():
     return render_template("home.html")
@@ -330,6 +350,13 @@ def get_cursor():
 @app.route("/Assistant")
 def assistant_page():
     return render_template("admin.html")
+
+@app.route("/Assistant-Logout")
+def assistant_logout():
+    session.pop('user_id', None)
+    flash("You have been logged out.")
+    return redirect(url_for('assistant_page'))
+
 
 # Assistant login route ##
 

@@ -223,18 +223,9 @@ form p a {
   font-weight: 600;
   transition: background 0.2s;
 }
-
 .view-btn:hover {
   background-color: #8ede8a;
 }
-
-#doctorList {
-  display: none;
-  padding: 40px 20px;
-  text-align: center;
-  background-color: #f9fafb;
-}
-
 #doctorTitle {
   font-size: 32px;
   color: #0f7809;
@@ -278,23 +269,6 @@ form p a {
   font-size: 16px;
   margin: 0;
 }
-.book-btn {
-  background-color: #16a34a;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.book-btn:hover {
-  background-color: #8ede8a;
-  transform: scale(1.05);
-}
-
-
 .back-btn {
   display: inline-block;
   margin-bottom: 20px;
@@ -318,4 +292,41 @@ form p a {
   margin-top: 60px;
   margin-bottom: 20px;
   font-weight: 700;
+}
+/* Ensure proper section visibility */
+#mainSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#doctorList {
+  display: none; /* Hidden by default */
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  z-index: 10; /* Bring it above other elements */
+}
+
+/* Make book buttons clickable */
+.book-btn {
+  background-color: #18ab3f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: auto; /* ✅ Ensure it's clickable */
+  transition: background-color 0.3s ease;
+}
+
+.book-btn:hover {
+  background-color: #148c34;
+}
+
+/* Ensure no invisible overlay blocks clicks */
+section, div, nav, .content {
+  position: relative;
+  z-index: 1;
 }
