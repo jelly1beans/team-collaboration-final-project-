@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+/* ---------- General ---------- */
+body {
+  color: white;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background:  #14884e;
+  padding: 20px 40px;
+}
+
+.logo-container {
+  margin-right: 35px;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+.title {
+  font-size: 20px;
+  letter-spacing: 5px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.menu:hover {
+  transform: scale(1.1);
+}
+
+/* Main container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  gap: 20px;
+}
+
+/* Left Profile Section */
+.profile-section {
+  background: #145214;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  flex: 0 0 250px;
+  color: white;
+}
+
+/* Profile Image */
+.profile-section img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 3px solid white;
+  object-fit: cover;
+}
+
+/* Hide default file input */
+#uploadImage {
+  display: none;
+}
+
+/* Custom Upload Button */
+.upload-btn {
+  display: block;               /* center under image */
+  margin: 0 auto 15px auto;     /* center + spacing */
+  padding: 10px 20px;
+  background-color: #28a745;    /* green button */
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+.upload-btn:hover {
+  background-color: #218838;    /* darker green hover */
+}
+
+/* Buttons */
+.profile-section button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 6px;
+  background: #0b3d0b;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  
+}
+.profile-section button:hover {
+  background: #094d09;
+}
+
+/* Right Details Section */
+.details-section {
+  flex: 1;
+  background: #0b3d0b; /* dark green background */
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  height: fit-content;
+  margin-top: 100px;
+}
+
+/* Input Fields */
+.input-box {
+  background: linear-gradient(to right, #8fc48f, #0b3d0b);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -360px; /* hidden by default */
+  width: 250px;
+  height: 100%;
+  background-color: #0f3615;
+  color: #fff;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.4);
+  transition: right 0.3s ease;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar.active {
+  right: 0;
+}
+
+.sidebar h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2a6c35;
+  padding-bottom: 10px;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  display: block;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.sidebar a:hover {
+  background: #1c6025;
+}
+
+.close-btn {
+  align-self: flex-end;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ccc;
+  margin-bottom: 10px;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: white;
+}
+
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-card,
+  .profile-card {
+    width: 90%;
+  }
+}

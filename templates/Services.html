@@ -6,31 +6,74 @@
   <title>Services Dropdown</title>
   <link rel="stylesheet" href="{{url_for('static', filename = 'style1.css')}}">
 </head>
-<body>
- <nav class="navbar">
+<body><nav class="navbar">
+  <div class="navbar-left">
     <div class="logo-container">
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
     </div>
+
     <ul class="nav-menu">
       <li><a href="{{ url_for('home_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
-      <li>
-        <a href="{{ url_for('service_page') }}">SERVICE ▾</a>
-        <ul>
-          <li><a href="{{url_for('nearsighted_page')}}">Nearsightedness</a></li>
-          <li><a href="{{ url_for('farsighted_page') }}">Farsightedness</a></li>
-          <li><a href="{{ url_for('astigmatism_page') }}">Astigmatism</a></li>
-          <li><a href="{{ url_for('presbyopia_page') }}">Presbyopia</a></li>
-          <li><a href="{{ url_for('cataracts_page') }}">Cataract</a></li>
+
+        <ul class="dropdown">
+          <a href="{{ url_for('service_page') }}">SERVICE ▾</a>
+        <ul class="dropdown-content">
+          <a href="{{url_for('nearsighted_page')}}">Nearsightedness</a>
+          <a href="{{ url_for('farsighted_page') }}">Farsightedness</a>
+          <a href="{{ url_for('astigmatism_page') }}">Astigmatism</a>
+          <a href="{{ url_for('presbyopia_page') }}">Presbyopia</a>
+          <a href="{{ url_for('cataracts_page') }}">Cataract</a>
         </ul>
-      </li>
+        </ul>
+
       <li><a href="{{ url_for('appointment_page')}}">Book Now</a></li>
     </ul>
-    <ul class="nav-menu-right">
-      <li><a href="{{ url_for('logout') }}">LOG OUT</a></li>
-      <li><a href="{{ url_for('profile_page') }}">PROFILE</a></li>
     </ul>
-  </nav>
+  </div>
+  <ul class="nav-menu-right">
+    <li class="profile-dropdown">
+      <div class="profile-info" onclick="toggleSidebar()">
+        <div class="profile-icon">
+          {% if profile and profile.Image %}
+            <img id="profileImage" src="{{ url_for('get_profile_image', user_id=profile.User_id) }}" alt="User">
+          {% else %}
+            <img id="profileImage" src="https://img.icons8.com/ios-filled/100/FFFFFF/user.png" alt="User">
+          {% endif %}
+        </div>
+        <span class="username">{{ profile.Full_name or 'User' }}</span>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- ✅ SIDE NAVIGATION -->
+<div id="profileSidebar" class="profile-sidebar">
+  <div class="sidebar-header">
+    <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+  </div>
+
+  <div class="sidebar-profile">
+    <div class="sidebar-photo">
+      {% if profile and profile.Image %}
+        <img src="{{ url_for('get_profile_image', user_id=profile.User_id) }}" alt="User">
+      {% else %}
+        <img src="https://img.icons8.com/ios-filled/100/114d20/user.png" alt="Default User">
+      {% endif %}
+    </div>
+    <h3>{{ profile.Full_name or 'User' }}</h3>
+    <p>{{ profile.Email or 'user@email.com' }}</p>
+  </div>
+
+  <div class="sidebar-content">
+    <a href="{{ url_for('profile_page') }}">View Profile</a>
+    <a href="{{ url_for('book_appointment_page')}}">Schedule</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
+
+<!-- ✅ Overlay -->
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,6 +197,12 @@ function openModal(id) {
 function closeModal(id) {
   document.getElementById(id).style.display = "none";
 }
+function toggleSidebar() {
+  const sidebar = document.getElementById('profileSidebar');
+  const overlay = document.getElementById('overlay');
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+  }
 </script>
 
   </div>

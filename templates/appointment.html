@@ -24,7 +24,11 @@
 
         <div>
           <label for="gender">Gender</label>
-          <input id="gender" name="gender" type="text" placeholder="Ex. Male" required aria-required="true">
+          <select id="gender" name="gender" required aria-required="true">
+            <option value="">-- Choose --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
         </div>
 
         <div>
@@ -33,10 +37,8 @@
           <small class="note">Include country code (e.g. +63) or start with 09. 7–12 digits.</small>
         </div>
 
-        <div>
-          <label for="email">Email address</label>
-          <input id="email" name="email" type="email" placeholder="name@example.com" required aria-required="true">
-        </div>
+        <input id="email" name="email" type="email" placeholder="name@example.com"
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required aria-required="true">
 
         <div>
           <label for="date">Preferred date</label>

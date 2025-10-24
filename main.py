@@ -240,38 +240,132 @@ def get_profile_image(user_id):
         return send_file(io.BytesIO(profile['Image']), mimetype='image/jpeg')
     else:
         return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
+    
+@app.route("/book-appointment")
+def book_appointment_page():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("Please log in to view your profile.")
+        return redirect(url_for('landing_page'))
+    cursor.execute("""
+        SELECT appointment_id, fullname, appt_date, appt_time, service, doctor, notes, status, decline_message
+        FROM appointment
+        WHERE User_id = %s
+        ORDER BY appt_date DESC
+    """, (user_id,))
+    appointments = cursor.fetchall()
 
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("book-appointment.html", appointments=appointments, existing=existing, profile=profile)
 ## home page ##
 
 @app.route("/Home")
 def home_page():
-    return render_template("home.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("home.html", profile=profile, existing=existing)
 
 ## services pages ##
 
 @app.route("/Farsighted")
 def farsighted_page():
-    return render_template("farsighted.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("farsighted.html", profile=profile, existing=existing)
 
 @app.route("/Astigmatism")
-def astigmatism_page():   
-    return render_template("astigmatism.html")
+def astigmatism_page(): 
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("astigmatism.html", profile=profile, existing=existing)  
 
 @app.route("/Cataracts")
 def cataracts_page():
-    return render_template("Cataracts.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("Cataracts.html", profile=profile, existing=existing)
 
 @app.route("/Nearsighted")
 def nearsighted_page():
-    return render_template("nearsighted.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("nearsighted.html", profile=profile, existing=existing)
 
 @app.route("/Services")
 def service_page():
-    return render_template("Services.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("Services.html", profile=profile, existing=existing)
+    
 
 @app.route("/Presbyopia")
 def presbyopia_page():
-    return render_template("Presbyopia.html")
+    user_id = session.get('user_id')
+
+    # get user info
+    cursor.execute("SELECT * FROM user WHERE User_id = %s", (user_id,))
+    existing = cursor.fetchone()
+
+    # get profile info
+    cursor.execute("SELECT * FROM profile WHERE User_id = %s", (user_id,))
+    profile = cursor.fetchone()
+
+    return render_template("presbyopia.html", profile=profile, existing=existing)
+    
 
 ## appointment page ##
 
@@ -301,7 +395,7 @@ def appointment_page():
                    (user_id, fullname, gender, contact, email, date, time, service, doctor, notes))
     connection.commit()
     flash("Appointment booked successfully.")
-    return redirect(url_for("profile_page"))
+    return redirect(url_for("book_appointment_page"))
 
 # cancel appointment route ##
 
@@ -321,11 +415,11 @@ def cancel_appointment(appt_id):
 
     if not appt:
         flash("Appointment not found.")
-        return redirect(url_for("profile_page"))
+        return redirect(url_for("book_appointment_page"))
 
     if appt["status"] != "Accepted":
         flash("You can only cancel accepted appointments.")
-        return redirect(url_for("profile_page"))
+        return redirect(url_for("book_appointment_page"))
 
     cursor.execute(
         "DELETE FROM appointment WHERE appointment_id=%s AND user_id=%s",
@@ -333,7 +427,7 @@ def cancel_appointment(appt_id):
     )
     connection.commit()
     flash("Appointment cancelled successfully.")
-    return redirect(url_for("profile_page"))
+    return redirect(url_for("book_appointment_page"))
 
 
    ## privacy policy page ##
@@ -384,11 +478,16 @@ def assistant_login():
 
 @app.route("/appointments-view", methods=["GET"])
 def view_appointments():
+    Assistant_id = session.get('assistant_id')
     cursor = get_cursor()
     sql = "SELECT * FROM appointment WHERE status = 'Pending'"
     cursor.execute(sql)
     appointments = cursor.fetchall()
-    return render_template("appointments-view.html", appointment=appointments)
+
+    cursor.execute("SELECT * FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+    assistant = cursor.fetchone()
+
+    return render_template("appointments-view.html", appointment=appointments, assistant=assistant)
 
 # Accept appointment route ##
 
@@ -434,6 +533,135 @@ def decline_appointment():
     flash("Appointment declined with message.")
     return redirect(url_for("view_appointments"))
 
+# profile routes ##
+
+@app.route("/Assistant-Profile")
+def assistant_profile_page():
+    Assistant_id = session.get('assistant_id')
+    if not Assistant_id:
+        flash("Please log in to view your profile.")
+        return redirect(url_for('assistant_page'))
+
+    cursor.execute("SELECT * FROM assistant_profile WHERE Assistant_id = %s", (Assistant_id,))
+    assistant_profile = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+    assistant = cursor.fetchone()
+
+    return render_template("assistant_profile.html", assistant_profile=assistant_profile, assistant=assistant)
+
+@app.route("/assistant-profile", methods=["POST"])
+def assistant_edit_profile_page():
+    Assistant_id = session.get("assistant_id")
+    if not Assistant_id:
+        flash("Please log in to edit your profile.")
+        return redirect(url_for("landing_page"))
+
+    action = request.form.get("action-btn")
+
+    # --- CHANGE PASSWORD FEATURE ---
+    if action == "change-password-btn":
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+
+        if not old_password or not new_password or not confirm_password:
+            flash("All password fields are required.")
+            return redirect(url_for("assistant_profile_page"))
+
+        if new_password != confirm_password:
+            flash("New password and confirmation do not match.")
+            return redirect(url_for("assistant_profile_page"))
+
+        # Verify old password
+        cursor.execute("SELECT Assistant_password FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+        result = cursor.fetchone()
+
+        if not result:
+            flash("Assistant not found.")
+            return redirect(url_for("assistant_profile_page"))
+
+        old_password_db = result["Assistant_password"]
+
+        # Compare old password (assuming you used plaintext for now)
+        if old_password != old_password_db:
+            flash("Old password is incorrect.")
+            return redirect(url_for("assistant_profile_page"))
+
+        # Update to new password
+        cursor.execute(
+            "UPDATE assistant SET Assistant_password = %s WHERE Assistant_id = %s",
+            (new_password, Assistant_id)
+        )
+        connection.commit()
+        flash("Password successfully updated.")
+        return redirect(url_for("assistant_profile_page"))
+
+    # --- EXISTING PROFILE UPDATE LOGIC BELOW ---
+    fullname = request.form.get("fullname")
+    contact_number = request.form.get("contact_number")
+    email = request.form.get("email")
+    file = request.files.get("profileImage")
+
+    if not fullname or not contact_number or not email:
+        flash("Full name, contact number, and email are required.")
+        return redirect(url_for("assistant_profile_page"))
+
+    image_data = file.read() if file and file.filename else None
+
+    if action == "delete-btn":
+        cursor.execute("DELETE FROM assistant_profile WHERE Assistant_id = %s", (Assistant_id,))
+        cursor.execute("DELETE FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+        connection.commit()
+        session.clear()
+        flash("Account and profile deleted.")
+        return redirect(url_for("assistant_page"))
+
+    elif action == "save-btn":
+        cursor.execute("SELECT * FROM assistant_profile WHERE Assistant_id = %s", (Assistant_id,))
+        existing = cursor.fetchone()
+
+        if existing:
+            if image_data:
+                cursor.execute(
+                    """UPDATE assistant_profile 
+                       SET Asst_Fullname=%s, Asst_Contact=%s, Asst_Email=%s, Asst_Image=%s 
+                       WHERE Assistant_id=%s""",
+                    (fullname, contact_number, email, image_data, Assistant_id),
+                )
+            else:
+                cursor.execute(
+                    """UPDATE assistant_profile
+                       SET Asst_Fullname=%s, Asst_Contact=%s, Asst_Email=%s 
+                       WHERE Assistant_id=%s""",
+                    (fullname, contact_number, email, Assistant_id),
+                )
+        else:
+            cursor.execute(
+                """INSERT INTO assistant_profile (Asst_Fullname, Asst_Contact, Asst_Email, Asst_Image, Assistant_id) 
+                   VALUES (%s, %s, %s, %s, %s)""",
+                (fullname, contact_number, email, image_data, Assistant_id),
+            )
+
+        connection.commit()
+        flash("Profile saved.")
+        return redirect(url_for("assistant_profile_page"))
+
+@app.route('/assistant-profile/image/<int:assistant_id>')
+def get_assistant_profile_image(assistant_id):
+    cursor.execute("SELECT Asst_Image FROM assistant_profile WHERE Assistant_id = %s", (assistant_id,))
+    assistant_profile = cursor.fetchone()
+
+    if assistant_profile and assistant_profile['Asst_Image']:
+        return send_file(io.BytesIO(assistant_profile['Asst_Image']), mimetype='image/jpeg')
+    else:
+        return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
+    
+# Doctor scheduling page ##
+
+@app.route("/doctors-schedule")
+def doctors_schedule():
+    return render_template("doctor-schedule.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
