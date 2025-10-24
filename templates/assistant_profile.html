@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistant Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='assistant_profile.css') }}">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
+    </div>
+    <div class="title"><h3>{{ assistant.Assistant_name or 'User' }}</h3></div>
+    <div class="menu" id="menu-btn">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="close-btn" id="close-btn">&times;</div>
+    <h3>Menu</h3>
+    <a href="#">Dashboard</a>
+    <a href="{{url_for('doctors_schedule')}}">Doctors</a>
+    <a href="{{url_for('view_appointments')}}">Appointments</a>
+    <a href="{{url_for('assistant_profile_page')}}">Profile</a>
+    <a href="{{url_for('assistant_logout')}}">Logout</a>
+  </div>
+<!-- profile form: only profile & contacts -->
+<form id="profileForm" action="/assistant-profile" method="post" enctype="multipart/form-data">
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-icon">
+        {% if assistant_profile and assistant_profile.Asst_Image %}
+          <img id="profileImage" src="{{ url_for('get_assistant_profile_image', assistant_id=assistant_profile.Assistant_id) }}" alt="User">
+        {% else %}
+          <img id="profileImage" src="https://img.icons8.com/ios-filled/100/FFFFFF/user.png" alt="User">
+        {% endif %}
+      </div>
+
+      <input type="file" id="uploadImage" accept="image/*" name="profileImage" style="display:none;">
+      <label for="uploadImage" class="upload-btn">Change Picture</label>
+
+      <h2>PROFILE</h2>
+
+      <div class="actions">
+        <button type="submit" id="deleteBtn" name="action-btn" value="delete-btn">Delete</button>
+        <button type="button" id="updateBtn">Update</button>
+        <button type="submit" id="saveBtn" name="action-btn" value="save-btn" disabled>Save</button>
+        <!-- New Change Password Button -->
+        <button type="button" id="changePasswordBtn">Change Password</button>
+      </div>
+
+      <!-- Hidden Change Password Section -->
+      <div id="changePasswordSection" style="display:none; margin-top:20px;">
+        <h3>Change Password</h3>
+
+        <div class="input-box">
+          <label>Old Password:</label>
+          <input type="password" id="oldPassword" name="old_password" placeholder="Enter old password">
+        </div>
+
+        <div class="input-box">
+          <label>New Password:</label>
+          <input type="password" id="newPassword" name="new_password" placeholder="Enter new password">
+        </div>
+
+        <div class="input-box">
+          <label>Confirm Password:</label>
+          <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm new password">
+        </div>
+
+        <div style="margin-top:10px;">
+          <button type="button" id="cancelChangePasswordBtn">Cancel</button>
+          <button type="submit" name="action-btn" value="change-password-btn">Save Password</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="details-section">
+      <div class="input-box">
+        <label>Name (Full Name):</label>
+        <input type="text" id="name" name="fullname" value="{{ assistant_profile.Asst_Fullname if assistant_profile else '' }}" readonly>
+      </div>
+
+      <div class="input-box">
+        <label>Contact number:</label>
+        <input type="text" id="contact" name="contact_number" value="{{ assistant_profile.Asst_Contact if assistant_profile else '' }}" readonly>
+      </div>
+
+      <div class="input-box">
+        <label>Email:</label>
+        <input type="email" id="email" name="email" value="{{ assistant_profile.Asst_Email if assistant_profile else '' }}" readonly>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-message-container">
+      {% for message in messages %}
+        <div class="flash-message">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<script>
+  const updateBtn = document.getElementById("updateBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
+  const uploadImage = document.getElementById("uploadImage");
+  const profileImage = document.getElementById("profileImage");
+  const changePasswordBtn = document.getElementById("changePasswordBtn");
+  const changePasswordSection = document.getElementById("changePasswordSection");
+  const cancelChangePasswordBtn = document.getElementById("cancelChangePasswordBtn");
+
+  // Lock inputs on load
+  window.addEventListener("load", () => {
+    document.querySelectorAll("input[type='text'], input[type='email']")
+      .forEach(input => input.setAttribute("readonly", true));
+  });
+
+  // Unlock on update
+  updateBtn.addEventListener("click", () => {
+    document.querySelectorAll("input[type='text'], input[type='email']")
+      .forEach(input => input.removeAttribute("readonly"));
+    saveBtn.disabled = false;
+    alert("You can now edit your profile.");
+  });
+
+  // Confirm delete
+  deleteBtn.addEventListener("click", (e) => {
+    if (!confirm("Are you sure you want to delete your account and profile?")) {
+      e.preventDefault();
+    }
+  });
+
+  // Preview uploaded profile picture + enable save button
+  uploadImage.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        profileImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      saveBtn.disabled = false;
+    }
+  });
+
+  // Show password change section
+  changePasswordBtn.addEventListener("click", () => {
+    changePasswordSection.style.display = "block";
+    changePasswordBtn.style.display = "none";
+  });
+
+  // Cancel password change
+  cancelChangePasswordBtn.addEventListener("click", () => {
+    changePasswordSection.style.display = "none";
+    changePasswordBtn.style.display = "inline-block";
+    document.getElementById("oldPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+  });
+
+  // ✅ Sidebar toggle fix
+  const menuBtn = document.getElementById("menu-btn");
+  const sidebar = document.getElementById("sidebar");
+  const closeBtn = document.getElementById("close-btn");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.add("active");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    sidebar.classList.remove("active");
+  });
+
+  // Close sidebar if clicked outside
+  document.addEventListener("click", (e) => {
+    if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+      sidebar.classList.remove("active");
+    }
+  });
+</script>
+
+
+</body>
+</html>

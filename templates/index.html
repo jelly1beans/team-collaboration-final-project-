@@ -244,6 +244,7 @@
         // Not logged in → redirect to login page with next parameter
         const nextPage = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
         window.location.href = `/SignUp?next=${encodeURIComponent(nextPage)}`;
+        window.location.href = `/Login?next=${encodeURIComponent(nextPage)}`;
       }
     });
 }

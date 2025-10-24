@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Webpage Design</title>
-    <link rel="stylesheet" href="{{url_for('static', filename = 'home.css')}}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='book-appointment.css') }}">
 </head>
 <style>.flash-message-container {
   position: fixed;
@@ -33,8 +35,8 @@
   100% { opacity: 0; transform: translateY(-20px); }
 }
 </style>
-<body> 
-  <nav class="navbar">
+<body>
+<nav class="navbar">
   <div class="navbar-left">
     <div class="logo-container">
       <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
@@ -44,6 +46,7 @@
       <li><a href="{{ url_for('home_page') }}">HOME</a></li>
       <li><a href="#">ABOUT US</a></li>
       <li><a href="{{ url_for('service_page') }}">SERVICE</a></li>
+      <li><a href="{{ url_for('appointment_page')}}">Book Now</a></li>
     </ul>
   </div>
 
@@ -91,40 +94,48 @@
 <!-- ✅ Overlay -->
 <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
-        <div class="content">
-           <div class="notes-content">
-                <h1>Accessible Optimology Eye Healthcare:</h1>
-                <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
-                <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
-            </div>
+<!-- IMPORTANT: appointments are OUTSIDE the profile form to avoid nested forms -->
+<div class="container">
+  <div class="appointments">
+    <div class="appt-header">Booked Appointments:</div>
+    <div class="appt-list">
+      {% if appointments %}
+        {% for appt in appointments %}
+          <div class="appt-item">
+            <p>
+              <strong>{{ appt.service }}</strong> with {{ appt.doctor }} <br>
+              on <strong>{{ appt.appt_date }}</strong> at <strong>{{ appt.appt_time }}</strong>
+            </p>
 
-        <section class="mission-vision-container" id="missionVisionSection">
-  <br>
-  <h1 class="section-title">Our Mission & Vision</h1>
-    <div class="section">
-      <h2 class="title">MISSION</h2>
-      <div class="box">
-        <p>
-          Our mission is to deliver an intuitive and efficient digital platform for Accessible Optiomology eye Healthcare, 
-          streamlining appointment scheduling and comprehensive patient management. We are dedicated to connecting patients 
-          with specialized eye care professionals, enhancing health outcomes, and fostering a patient-centric ecosystem 
-          that ensures timely and personalized care for all.
-        </p>
-      </div>
+            {% if appt.status == "Pending" %}
+              <p class="status pending">Status: Pending</p>
+              <p class="note">Waiting for assistant confirmation...</p>
+
+            {% elif appt.status == "Accepted" %}
+              <p class="status accepted">Status: Accepted</p>
+              <form action="{{ url_for('cancel_appointment', appt_id=appt.appointment_id) }}" method="post" style="display:inline;">
+                <button type="submit" class="cancel-btn"
+                  onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                  Cancel
+                </button>
+              </form>
+
+            {% elif appt.status == "Declined" %}
+              <p class="status declined">Status: Declined</p>
+              <div class="decline-box">
+                <strong>Reason:</strong> {{ appt.decline_message or "No reason provided." }}
+              </div>
+              <p class="note">You cannot cancel declined appointments.</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No appointments booked.</p>
+      {% endif %}
     </div>
+  </div>
+</div>
 
-    <div class="section">
-      <h2 class="title">VISION</h2>
-      <div class="box">
-        <p>
-          To foster a vibrant and healthy Filipino society by guaranteeing equitable access to specialized eye care, 
-          leveraging technology to make ophthalmological services convenient, efficient, and deeply personalized for every patient.
-        </p>
-      </div>
-    </div>
-
-  </section>
-</body>
 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <div class="flash-message-container">
@@ -134,7 +145,8 @@
                      </div>
                 {% endif %}
             {% endwith %}
-      <script>
+
+<script>
   // Auto-dismiss flash message after 5 seconds
   setTimeout(function() {
     const alert = document.querySelector('.alert');
@@ -151,9 +163,5 @@
   overlay.classList.toggle('active');
   }
 </script>
-
-
-
 </body>
-
 </html>

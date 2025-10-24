@@ -185,107 +185,94 @@
   opacity: 1;
   visibility: visible;
 }
-/* Dropdown */
-.dropdown {
-  position: relative;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  min-width: 150px;
-}
-.dropdown-content{
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  border-radius: 20px;
-}
-.dropdown-content a{
-  color: white;
-  background-color: #114d20;
-  padding: 5px;
-  text-decoration: none;
-  display: block;
-}
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-/* Content Box */
-.content-box {
-  margin: 30px auto;
-  max-width: 800px;
-  padding: 20px;
-  border-radius: 10px;
-  background: #f8f8f8;
-}
-
-.content-box h2 {
-  color: #0d6238;
-  margin-top: 0;
-}
-
-.content-box h3 {
-  margin-top: 20px;
-  color: #0d6238;
-}
-
-.content-box p, 
-.content-box ul {
-  line-height: 1.6;
-  color: #0d6238;
-}
-
-/* Doctors Section */
-.doctors {
-  margin: 50px auto;
-  padding: 20px;
-  text-align: center;
-  max-width: 1000px;
-}
-
-.doctors h2 {
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #0d6238;
-}
-
-.doctor-cards {
+/* Main container */
+.container {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.doctor-card {
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  align-items: flex-start;
+  margin: 40px auto;
   padding: 20px;
-  width: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+  width: 80%;
+  gap: 20px;
 }
-
-.doctor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.doctor-card img {
+/* Appointments box */
+.appointments {
+  background-color: #f0fdf4;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+  padding: 15px 20px;
   width: 100%;
-  height: 220px;
-  object-fit: contain;   /* shows full image */
-  display: block;
-  border-bottom: 2px solid #e0e0e0;
+  max-width: 600px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-
-.doctor-card h3 {
-  margin: 10px 0 5px;
-  color: #0d6238;
+/* Header styling */
+.appt-header {
   font-size: 1.2rem;
+  font-weight: bold;
+  color: #1b5e20;
+  margin-bottom: 10px;
 }
 
-.doctor-card p {
-  color: #2c3e50;
-  font-size: 0.9rem;
+/* Individual appointment item */
+.appt-item {
+  background-color: #e8f5e9;
+  border-left: 4px solid #388e3c;
+  padding: 10px 15px;
+  border-radius: 6px;
+  position: center;
+  border-bottom: 1px solid #eee;
+  padding: 15px 10px;
+}
+
+.appt-list {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.appt-item:last-child {
+  border-bottom: none;
+}
+
+.status {
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.status.pending { color: #ffc107; }
+.status.accepted { color: #28a745; }
+.status.declined { color: #dc3545; }
+
+.decline-box {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #721c24;
+  margin-top: 5px;
+}
+
+.note {
+  font-size: 14px;
+  color: #666;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cancel-btn:hover {
+  background-color: #b52a37;
 }

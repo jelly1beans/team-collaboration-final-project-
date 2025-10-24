@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctors' Schedule</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='doctor-schedule.css') }}">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <span class="logo">LOGO</span> |
+      <span class="assistant">ASSISTANT</span>
+    </div>
+    <div class="navbar-right" id="menuButton">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li>Dashboard</li>
+      <li>Appointments</li>
+      <li>Doctors</li>
+      <li>Patients</li>
+      <li>Logout</li>
+    </ul>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <h2>DOCTORS’ SCHEDULE</h2>
+    <div class="schedule-container">
+      <!-- Doctor 1 -->
+      <div class="doctor">
+        <h3>DOCTOR 1</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+
+      <!-- Doctor 2 -->
+      <div class="doctor">
+        <h3>DOCTOR 2</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+
+      <!-- Doctor 3 -->
+      <div class="doctor">
+        <h3>DOCTOR 3</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+
+      <!-- Doctor 4 -->
+      <div class="doctor">
+        <h3>DOCTOR 4</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+
+      <!-- Doctor 5 -->
+      <div class="doctor">
+        <h3>DOCTOR 5</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+
+      <!-- Doctor 6 -->
+      <div class="doctor">
+        <h3>DOCTOR 6</h3>
+        <div class="appointment"><span>APPOINTMENT 1</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 2</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+        <div class="appointment"><span>APPOINTMENT 3</span><div class="icons"><span class="check">✔</span><span class="cross">✖</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const sidebar = document.getElementById("sidebar");
+
+    menuButton.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+    });
+
+    const checks = document.querySelectorAll(".check");
+    const crosses = document.querySelectorAll(".cross");
+
+    checks.forEach(check => {
+      check.addEventListener("click", () => {
+        alert("Appointment approved ✅");
+      });
+    });
+
+    crosses.forEach(cross => {
+      cross.addEventListener("click", () => {
+        alert("Appointment declined ❌");
+      });
+    });
+  </script>
+</body>
+</html>
