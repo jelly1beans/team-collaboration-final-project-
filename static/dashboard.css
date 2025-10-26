@@ -113,108 +113,10 @@ body {
 /* ------------------ Page Title ------------------ */
 .page-title {
   text-align: center;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 28px;
   margin: 40px 0 20px;
 }
-
-/* ------------------ Appointment Table ------------------ */
-.appointment-table {
-  width: 90%;
-  margin: 0 auto;
-  border-collapse: collapse;
-  background-color: #114d20;
-  border: 2px solid white;
-}
-
-.appointment-table th,
-.appointment-table td {
-  border: 2px solid white;
-  padding: 15px;
-  text-align: center;
-  font-size: 18px;
-}
-
-.appointment-table th {
-  background-color: #114d20;
-  color: white;
-  font-weight: bold;
-}
-
-/* ------------------ Buttons ------------------ */
-.action-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  margin: 2px;
-  transition: background-color 0.2s ease;
-}
-
-.accept-btn {
-  background-color: #28a745;
-}
-
-.accept-btn:hover {
-  background-color: #197a2e;
-}
-
-.decline-btn {
-  background-color: #dc3545;
-}
-
-.decline-btn:hover {
-  background-color: #a80f1e;
-}
-
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ------------------ Flash Message ------------------ */
-.flash-message-container {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  width: auto;
-  max-width: 90%;
-  padding: 10px;
-}
-
-.flash-message {
-  background-color: #18ab3f;
-  color: white;
-  padding: 15px 25px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  font-size: 16px;
-  animation: fadeInOut 4s ease-in-out forwards;
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
-}
-/* ✅ Green for success */
-.flash-message.success {
-  background-color: #2e7d32;
-  border-left: 5px solid #1b5e20;
-}
-
-/* ❌ Red for error */
-.flash-message.error {
-  background-color: #d32f2f;
-  border-left: 5px solid #b71c1c;
-}
-
 
 /* ------------------ Responsiveness ------------------ */
 @media (max-width: 768px) {
@@ -229,5 +131,74 @@ button[disabled] {
 
   .sidebar {
     width: 200px;
+  }
+}
+/* ---------------- DASHBOARD STYLING ---------------- */
+.dashboard-container {
+  padding: 40px;
+  text-align: center;
+  color: black;
+}
+
+.summary-cards {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 30px 0;
+}
+
+.summary-box {
+  background-color: #14884e;
+  color: white;
+  padding: 40px 60px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(20, 98, 5, 0.2);
+  width: 280px;
+}
+
+.summary-box h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.summary-box p {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.chart-box {
+  background-color: #114d20;
+  color: white;
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.chart-placeholder {
+  background-color: #1c6025;
+  border-radius: 15px;
+  margin-top: 15px;
+  padding: 50px 10px;
+  font-size: 16px;
+  color: #b8e0c2;
+}
+canvas {
+  width: 100% !important;
+  height: 250px !important;
+}
+
+
+/* Responsive dashboard */
+@media (max-width: 768px) {
+  .summary-cards {
+    flex-direction: column;
+    align-items: center;
   }
 }

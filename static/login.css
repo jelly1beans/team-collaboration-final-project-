@@ -187,4 +187,43 @@ form input::placeholder{
   margin-bottom: 60px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+/* ===== FLASH MESSAGES ===== */
+.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
 
+.flash-message {
+  background-color: #18ab3f;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ✅ Green for success */
+.flash-message.success {
+  background-color: #2e7d32;
+  border-left: 5px solid #1b5e20;
+}
+
+/* ❌ Red for error */
+.flash-message.error {
+  background-color: #d32f2f;
+  border-left: 5px solid #b71c1c;
+}
