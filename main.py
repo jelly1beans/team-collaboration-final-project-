@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for,flash, session, send_file, jsonify
-import pymysql, io
+import pymysql, io, re
 app = Flask (__name__)
 app.secret_key = 'j4e_secret_key'
 SESSION_USER_ID = 'user_id'
@@ -28,24 +28,34 @@ def logout():
     flash("You have been logged out.")
     return redirect(url_for('landing_page'))
 
-# signup route ## 
-
+# ✅ Sign Up Route
 @app.route("/SignUp", methods=['GET', 'POST'])
 def signup_page():
     next_page = request.args.get('next') or request.form.get('next')
 
     if request.method == 'POST':
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+
+        # ✅ EMAIL VALIDATION (require valid format)
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+            flash("Please enter a valid email address (e.g. user@example.com).", "error")
+            return redirect(url_for('signup_page', next=next_page))
 
         # ✅ Check if user already exists
         cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
         existing_user = cursor.fetchone()
-        if existing_user:
-            flash("Email already exists. Please log in instead.")
-            # Redirect to login, preserving 'next' parameter (e.g. appointment)
+
+        # If came from Book Appointment and user exists → go to Login instead
+        if existing_user and next_page and next_page.startswith('/appointment'):
+            flash("Email already exists. Please log in instead.", "error")
             return redirect(url_for('login_page', next=next_page))
+
+        # If regular signup and user exists → also redirect to login
+        if existing_user:
+            flash("Email already exists. Please log in instead.", "error")
+            return redirect(url_for('login_page'))
 
         # ✅ Create new user
         cursor.execute(
@@ -59,7 +69,7 @@ def signup_page():
         user = cursor.fetchone()
 
         if user:
-            # Auto-login after signup
+            # Auto-login
             session['user_id'] = user['User_id']
 
             # Create empty profile
@@ -68,24 +78,22 @@ def signup_page():
                 (name, email, " ", user['User_id'])
             )
             connection.commit()
-            flash("Account created successfully! You are now logged in.")
+            flash("Account created successfully! You are now logged in.", "success")
 
-            # ✅ Redirect logic
+            # ✅ Redirect
             if next_page and next_page.startswith('/appointment'):
                 return redirect(next_page)
             else:
                 return redirect(url_for('home_page'))
 
-        flash("Signup failed. Please try again.")
+        flash("Signup failed. Please try again.", "error")
         return redirect(url_for('signup_page', next=next_page))
 
-    # Render signup page with next-page memory
     return render_template("index.html", next_page=next_page)
 
 
-# login route ##
-
-@app.route('/Login', methods=['GET', 'POST'])
+# ✅ Login Route
+@app.route("/Login", methods=['GET', 'POST'])
 def login_page():
     next_page = request.args.get('next') or request.form.get('next')
 
@@ -97,31 +105,35 @@ def login_page():
         user = cursor.fetchone()
 
         if not user:
-            flash("Email not found.")
+            flash("Email not found.", "error")
             return redirect(url_for('login_page', next=next_page))
         elif user['User_password'] != password:
-            flash("Incorrect password.")
+            flash("Incorrect password.", "error")
             return redirect(url_for('login_page', next=next_page))
         else:
             session['user_id'] = user['User_id']
-            flash("Login successful!")
+            flash("Login successful!", "success")
 
-            # ✅ Redirect to appointment if they came from Book Appointment
             if next_page and next_page.startswith('/appointment'):
                 return redirect(next_page)
-
-            # Otherwise, go home
             return redirect(url_for('home_page'))
 
     return render_template('login.html', next_page=next_page)
 
+
+# ✅ Check if user logged in
 @app.route("/check_login")
 def check_login():
-    if 'user_id' in session:
-        return jsonify({"logged_in": True})
-    else:
-        return jsonify({"logged_in": False})
+    return jsonify({"logged_in": bool(session.get('user_id'))})
 
+
+# ✅ Check if email already exists (for AJAX)
+@app.route("/check_email_exists", methods=["POST"])
+def check_email_exists():
+    email = request.json.get("email")
+    cursor.execute("SELECT * FROM user WHERE User_email = %s", (email,))
+    user = cursor.fetchone()
+    return jsonify({"exists": bool(user)})
 
 
 ## forgot password route ##  
@@ -138,10 +150,10 @@ def forgot_password():
         if user:
             cursor.execute("UPDATE user SET User_password = %s WHERE User_email = %s", (new_password, email))
             connection.commit()
-            flash("Password updated successfully.")
-            return redirect(url_for('home_page'))
+            flash("Password updated successfully.", "success")
+            return redirect(url_for('login_page'))
         else:
-            flash("Email not found.")
+            flash("Email not found.", "error")
             return redirect(url_for('forgot_password'))
 
     return render_template('forgot_password.html')
@@ -180,9 +192,6 @@ def edit_profile_page():
     contact_number = request.form.get("contact_number")
     email = request.form.get("email")
     file = request.files.get("profileImage")
-    if not fullname or not contact_number or not email:
-        flash("Full name, contact number, and email are required.")
-        return redirect(url_for("profile_page"))
     # Read image only if uploaded
     image_data = file.read() if file and file.filename else None
  
@@ -464,15 +473,15 @@ def assistant_login():
     assistant = cursor.fetchone()
 
     if not assistant:
-        flash("Email not found.")
+        flash("Email not found.", "error")
         return redirect(url_for("assistant_page"))
     elif assistant['Assistant_password'] != password:
-        flash("Incorrect password.")
+        flash("Incorrect password.", "error")
         return redirect(url_for("assistant_page"))
     else:
         session['assistant_id'] = assistant['Assistant_id']
         flash("Assistant login successful!")
-        return redirect(url_for("view_appointments"))
+        return redirect(url_for("assistant_dashboard"))
 
 # View appointments route ##
 
@@ -506,7 +515,7 @@ def accept_appointment():
     """, ("Accepted", appointment_id))
     connection.commit()
     flash("Appointment accepted successfully.")
-    return redirect(url_for("view_appointments"))
+    return redirect(url_for("assistant_dashboard"))
 
 # Decline appointment route ##
 
@@ -521,7 +530,7 @@ def decline_appointment():
 
     if not decline_message or decline_message.strip() == "":
         flash("Please provide a reason for declining.")
-        return redirect(url_for("view_appointments"))
+        return redirect(url_for("vie_appointments"))
 
     cursor = connection.cursor()
     cursor.execute("""
@@ -531,7 +540,7 @@ def decline_appointment():
     """, ("Declined", decline_message, appointment_id))
     connection.commit()
     flash("Appointment declined with message.")
-    return redirect(url_for("view_appointments"))
+    return redirect(url_for("assistant_dashboard"))
 
 # profile routes ##
 
@@ -657,11 +666,70 @@ def get_assistant_profile_image(assistant_id):
     else:
         return redirect("https://img.icons8.com/ios-filled/100/FFFFFF/user.png")
     
-# Doctor scheduling page ##
+@app.route("/appointments-record", methods=["GET"])
+def record_appointments():
+    Assistant_id = session.get('assistant_id')
+    cursor = get_cursor()
+    cursor.execute("SELECT * FROM appointment")
+    appointments = cursor.fetchall()
 
-@app.route("/doctors-schedule")
-def doctors_schedule():
-    return render_template("doctor-schedule.html")
+    cursor.execute("SELECT * FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+    assistant = cursor.fetchone()
+
+    return render_template("records-appointment.html", appointment=appointments, assistant=assistant)
+
+
+@app.route("/assistant-dashboard")
+def assistant_dashboard():
+    Assistant_id = session.get('assistant_id')
+    cursor.execute("SELECT * FROM assistant WHERE Assistant_id = %s", (Assistant_id,))
+    assistant = cursor.fetchone()
+    return render_template("assistant-dashboard.html",assistant=assistant)
+
+@app.route("/api/dashboard-data")
+def dashboard_data():
+    # --- Users ---
+    cursor.execute("SELECT COUNT(*) AS count FROM user")
+    num_users = cursor.fetchone()['count']
+
+    # --- Appointments ---
+    cursor.execute("SELECT COUNT(*) AS count FROM appointment WHERE user_id IS NOT NULL")
+    booked_appointments = cursor.fetchone()['count']
+
+    cursor.execute("SELECT COUNT(*) AS pending FROM appointment WHERE status='Pending'")
+    pending_count = cursor.fetchone()['pending']
+
+    cursor.execute("SELECT COUNT(*) AS accepted FROM appointment WHERE status='Accepted'")
+    accepted_count = cursor.fetchone()['accepted']
+
+    cursor.execute("SELECT COUNT(*) AS declined FROM appointment WHERE status='Declined'")
+    declined_count = cursor.fetchone()['declined']
+
+    # --- Eye Conditions (services) ---
+    cursor.execute("""
+        SELECT service AS condition_name, COUNT(*) AS count 
+        FROM appointment 
+        GROUP BY service
+    """)
+    eye_conditions = {row['condition_name']: row['count'] for row in cursor.fetchall()}
+
+    # --- Doctors per Eye Condition ---
+    cursor.execute("""
+        SELECT doctor AS doctor_name, COUNT(*) AS count
+        FROM appointment 
+        GROUP BY doctor
+    """)
+    doctors = {row['doctor_name']: row['count'] for row in cursor.fetchall()}
+
+    return jsonify({
+        "num_users": num_users,
+        "booked_appointments": booked_appointments,
+        "pending_count": pending_count,
+        "accepted_count": accepted_count,
+        "declined_count": declined_count,
+        "eye_conditions": eye_conditions,
+        "doctors": doctors
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

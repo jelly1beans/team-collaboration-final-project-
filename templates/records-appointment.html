@@ -23,7 +23,7 @@
   <div class="sidebar" id="sidebar">
     <div class="close-btn" id="close-btn">&times;</div>
     <h3>Navigation</h3>
-    <a href="{{url_for('assistant_dashboard')}}">Dashboard</a>
+    <a href="#">Dashboard</a>
     <a href="{{url_for('record_appointments')}}">Records</a>
     <a href="{{url_for('view_appointments')}}">Appointments</a>
     <a href="{{url_for('assistant_profile_page')}}">Profile</a>
@@ -41,8 +41,8 @@
           <th>Time</th>
           <th>Service</th>
           <th>Doctor</th>
+          <th>Notes</th>
           <th>Status</th>
-          <th>Action</th>
         </tr>
       </thead>
 
@@ -54,46 +54,14 @@
           <td>{{ a.appt_time }}</td>
           <td>{{ a.service }}</td>
           <td>{{ a.doctor }}</td>
-          <td>{{ a.status or 'Pending' }}</td>
-          <td>
-            {% if a.status != 'Accepted' and a.status != 'Declined' %}
-              <!-- Accept button -->
-              <form action="{{ url_for('accept_appointment') }}" method="POST" style="display:inline;">
-                <input type="hidden" name="appointment_id" value="{{ a.appointment_id }}">
-                <button type="submit" class="action-btn accept-btn">Accept</button>
-              </form>
-
-              <!-- Decline button -->
-              <form action="{{ url_for('decline_appointment') }}" method="POST" style="display:inline;" onsubmit="return confirmDecline(this);">
-                <input type="hidden" name="appointment_id" value="{{ a.appointment_id }}">
-                <input type="hidden" name="decline_message" value="">
-                <button type="submit" class="action-btn decline-btn">Decline</button>
-              </form>
-            {% elif a.status == 'Accepted' %}
-              <button class="action-btn accept-btn" disabled>Accepted</button>
-            {% elif a.status == 'Declined' %}
-              <button class="action-btn decline-btn" disabled>Declined</button>
-            {% endif %}
-          </td>
+          <td>{{ a.notes}}</td>
+          <td>{{ a.status}}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-  </main>
-
-  <!-- ----------------- FLASH MESSAGES ----------------- -->
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="flash-message-container">
-      {% for message in messages %}
-        <div class="flash-message">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-  {% endwith %}
-
-  <!-- ----------------- SCRIPTS ----------------- -->
-  <script>
+</main>
+   <script>
     // Sidebar open/close
     const menuBtn = document.getElementById('menu-btn');
     const sidebar = document.getElementById('sidebar');
@@ -113,17 +81,6 @@
         sidebar.classList.remove('active');
       }
     });
-
-    // Decline message confirmation
-    function confirmDecline(form) {
-      const message = prompt("Please enter a reason for declining this appointment:");
-      if (message === null || message.trim() === "") {
-        alert("Decline message is required.");
-        return false;
-      }
-      form.querySelector('input[name="decline_message"]').value = message.trim();
-      return true;
-    }
   </script>
 </body>
 </html>

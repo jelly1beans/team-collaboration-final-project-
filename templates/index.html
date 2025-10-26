@@ -4,35 +4,7 @@
     <title>Webpage Design</title>
     <link rel="stylesheet" href="{{url_for('static', filename = 'design.css')}}">
 </head>
-<style>.flash-message-container {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  width: auto;
-  max-width: 90%;
-  padding: 10px;
-}
 
-.flash-message {
-  background-color: #18ab3f;
-  color: white;
-  padding: 15px 25px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  font-size: 16px;
-  animation: fadeInOut 4s ease-in-out forwards;
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
-}
-</style>
 <body>
     <nav class="navbar">
     <div class="logo-container">
@@ -51,10 +23,9 @@
 
         <div class="content">
            <div class="notes-content">
-                <h1>Accessible Optimology Eye Healthcare:</h1>
-                <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
-                <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
-            </div>
+                <h1>Ophthalmology Healthcare System:</h1>
+                <h2>Digital platform for appointment scheduling and patient management</h2>
+                <p>Experience the benefits of Ophthalmology Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>            </div>
 
 <form action="{{ url_for('signup_page') }}" method="post" autocomplete="off">
   <input type="hidden" name="next" value="{{ next_page }}">
@@ -75,14 +46,14 @@
   </div>
 </form>
         </div>
-        {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="flash-message-container">
-                        {% for message in messages %}
-                    <div class="flash-message">{{ message }}</div>
-                        {% endfor %}
-                     </div>
-                {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+            <div class="flash-message-container">
+              {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+              {% endif %}
             {% endwith %}
 </header>
 <br>
@@ -159,7 +130,6 @@
   </section>
 
   <script>
-  // Doctor data grouped by illness
   const doctorData = {
     nearsightedness: [
       { name: "Dr. Anna Smith", specialty: "Ophthalmologist - Myopia Specialist", img: "{{ url_for('static', filename='image/doc anna.jpg') }}" },
@@ -187,7 +157,9 @@
       { name: "Dr. Raisy Garcia", specialty: "Refractive Surgery Specialist(Multifocal Implants)", img: "{{ url_for('static', filename='image/doc sean.jpg') }}" }
     ]
   };
-    function showDoctors(illness) {
+
+
+  function showDoctors(illness) {
     const main = document.getElementById('mainSection');
     const list = document.getElementById('doctorList');
     const doctorCards = document.getElementById('doctorCards');
@@ -219,37 +191,119 @@
     document.getElementById('mainSection').style.display = 'flex';
   }
 
-  // ✅ Login check before booking
-  function bookAppointment(doctorName) {
-  // Store chosen doctor & service
-  sessionStorage.setItem("selectedDoctor", doctorName);
+  // ✅ Book Appointment Logic
+  async function bookAppointment(doctorName) {
+    sessionStorage.setItem("selectedDoctor", doctorName);
 
-  let selectedService = "";
-  for (const [service, doctors] of Object.entries(doctorData)) {
-    if (doctors.some(doc => doc.name === doctorName)) {
-      selectedService = service.charAt(0).toUpperCase() + service.slice(1);
-      break;
+    let selectedService = "";
+    for (const [service, doctors] of Object.entries(doctorData)) {
+      if (doctors.some(doc => doc.name === doctorName)) {
+        selectedService = service.charAt(0).toUpperCase() + service.slice(1);
+        break;
+      }
+    }
+    sessionStorage.setItem("selectedService", selectedService);
+
+    // Step 1: Check login
+    const loginRes = await fetch("/check_login");
+    const loginData = await loginRes.json();
+
+    if (loginData.logged_in) {
+      window.location.href = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
+      return;
+    }
+
+    // Step 2: Show email modal if not logged in
+showEmailModal(async (email) => {
+  // Step 3: Check if email exists
+  const emailRes = await fetch("/check_email_exists", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  const emailData = await emailRes.json();
+
+  const nextPage = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
+
+  if (emailData.exists) {
+    alert("Account found! Redirecting to login...");
+    window.location.href = `/Login?next=${encodeURIComponent(nextPage)}`;
+  } else {
+    alert("No account found. Redirecting to signup...");
+    window.location.href = `/SignUp?next=${encodeURIComponent(nextPage)}`;
+  }
+});
+
+    // Step 3: Check if email exists
+    const emailRes = await fetch("/check_email_exists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const emailData = await emailRes.json();
+
+    const nextPage = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
+
+    if (emailData.exists) {
+      alert("Account found! Redirecting to login...");
+      window.location.href = `/Login?next=${encodeURIComponent(nextPage)}`;
+    } else {
+      alert("No account found. Redirecting to signup...");
+      window.location.href = `/SignUp?next=${encodeURIComponent(nextPage)}`;
     }
   }
-  sessionStorage.setItem("selectedService", selectedService);
 
-  // ✅ Check login status
-  fetch("/check_login")
-    .then(response => response.json())
-    .then(data => {
-      if (data.logged_in) {
-        // Logged in → go directly to appointment page
-        window.location.href = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
-      } else {
-        // Not logged in → redirect to login page with next parameter
-        const nextPage = `/appointment?doctor=${encodeURIComponent(doctorName)}`;
-        window.location.href = `/SignUp?next=${encodeURIComponent(nextPage)}`;
-        window.location.href = `/Login?next=${encodeURIComponent(nextPage)}`;
-      }
-    });
+  function showEmailModal(callback) {
+  const modal = document.getElementById("emailModal");
+  const emailInput = document.getElementById("emailInput");
+  const cancelBtn = document.getElementById("emailCancel");
+  const submitBtn = document.getElementById("emailSubmit");
+
+  modal.style.display = "flex";
+  emailInput.focus();
+
+  // Close modal
+  cancelBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+
+  // Submit email
+  submitBtn.onclick = () => {
+    const email = emailInput.value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      emailInput.style.border = "1px solid red";
+      emailInput.placeholder = "Please enter a valid email";
+      return;
+    }
+
+    modal.style.display = "none";
+    callback(email); // Pass email to main logic
+  };
+
+  // Close when clicking outside modal
+  window.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  };
 }
 
 </script>
+<!-- Email Modal -->
+<div id="emailModal" class="modal-overlay">
+  <div class="modal-box">
+    <h2>Enter your Email</h2>
+    <p>Please enter your email to continue booking your appointment.</p>
+    <input type="email" id="emailInput" placeholder="example@gmail.com" required />
+    <div class="modal-buttons">
+      <button id="emailCancel">Cancel</button>
+      <button id="emailSubmit">Continue</button>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>

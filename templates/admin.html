@@ -5,35 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename = 'login.css')}}">
     <title>Document</title>
-    <style>.flash-message-container {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  width: auto;
-  max-width: 90%;
-  padding: 10px;
-}
-
-.flash-message {
-  background-color:#18ab3f;
-  color: white;
-  padding: 15px 25px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  font-size: 16px;
-  animation: fadeInOut 4s ease-in-out forwards;
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
-}
-</style>
+    
 </head>
 <body>
   <header>
@@ -47,11 +19,11 @@
     </ul>
   </nav>
         <div class="content">
-            <div class="notes-content">
-                <h1>Accessible Optimology Eye Healthcare:</h1>
-                <h2>Streamlining Eye Care for Better Patient Outcomes</h2>
-                <p>Experience the benefits of accessible Optimology Eye Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>
-            </div>
+           <div class="notes-content">
+                <h1>Ophthalmology Healthcare System:</h1>
+                <h2>Digital platform for appointment scheduling and patient management</h2>
+                <p>Experience the benefits of Ophthalmology Healthcare and transform the way you deliver eye care services. Our platform is designed to improve patient outcomes, enhance efficiency, and increase accessibility. Join us in revolutionizing eye care.</p>            <
+           </div>
                 <form action="/assistant_login" method="POST">
                 <div class="form">
                 <h3 style="text-align: center; font-size: 30px;">LogIn</h3>
@@ -65,11 +37,11 @@
                 </div>
                 </form>
 
-                {% with messages = get_flashed_messages() %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         <div class="flash-message-container">
-                            {% for message in messages %}
-                        <div class="flash-message">{{ message }}</div>
+                            {% for category, message in messages %}
+                        <div class="flash-message {{category}}">{{ message }}</div>
                     {% endfor %}
                         </div>
                             {% endif %}

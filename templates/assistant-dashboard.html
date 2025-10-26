@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistant Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- ---------------- NAVBAR ---------------- -->
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="{{ url_for('static', filename='image/logo.png') }}" alt="VISIONEASE Logo" class="logo">
+    </div>
+    <div class="title"><h3>{{ assistant.Assistant_name or 'Assistant' }}</h3></div>
+    <div class="menu" id="menu-btn">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </header>
+
+  <!-- ---------------- SIDEBAR ---------------- -->
+  <div class="sidebar" id="sidebar">
+    <div class="close-btn" id="close-btn">&times;</div>
+    <h3>Navigation</h3>
+    <a href="{{ url_for('assistant_dashboard') }}">Dashboard</a>
+    <a href="{{url_for('record_appointments')}}">Records</a>
+    <a href="{{url_for('view_appointments')}}">Appointments</a>
+    <a href="{{url_for('assistant_profile_page')}}">Profile</a>
+    <a href="{{url_for('assistant_logout')}}">Logout</a>
+  </div>
+
+  <!-- ---------------- DASHBOARD CONTENT ---------------- -->
+  <main class="dashboard-container">
+    <h2 class="page-title">ASSISTANT DASHBOARD</h2>
+
+    <section class="summary-cards">
+      <div class="summary-box">
+        <h3>NUMBER OF USER</h3>
+        <p id="userCount">0</p>
+      </div>
+      <div class="summary-box">
+        <h3>NUMBER OF BOOKED APPOINTMENT</h3>
+        <p id="bookedCount">0</p>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="chart-box">
+        <h3>Appointment Status</h3>
+        <canvas id="statusChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Eye Conditions</h3>
+        <canvas id="conditionChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Doctors</h3>
+        <canvas id="doctorChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- ---------------- JS ---------------- -->
+ <script>
+  // Sidebar functionality
+  const menuBtn = document.getElementById('menu-btn');
+  const sidebar = document.getElementById('sidebar');
+  const closeBtn = document.getElementById('close-btn');
+
+  menuBtn.addEventListener('click', () => sidebar.classList.add('active'));
+  closeBtn.addEventListener('click', () => sidebar.classList.remove('active'));
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+      sidebar.classList.remove('active');
+    }
+  });
+
+  // Fetch data for dashboard
+  fetch("/api/dashboard-data")
+    .then(res => res.json())
+    .then(data => {
+      // Display summary counts
+      document.getElementById('userCount').textContent = data.num_users;
+      document.getElementById('bookedCount').textContent = data.booked_appointments;
+
+      // -------- Chart 1: Appointment Status --------
+      new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Pending', 'Accepted', 'Declined'],
+          datasets: [{
+            data: [data.pending_count, data.accepted_count, data.declined_count],
+            backgroundColor: ['#ffdb4d', '#28a745', '#dc3545']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      // -------- Chart 2: Eye Conditions (Each Illness = Different Color) --------
+      const conditionLabels = Object.keys(data.eye_conditions);
+      const conditionData = Object.values(data.eye_conditions);
+
+      // Define distinct colors for conditions
+      const conditionColors = [
+        '#14884e', '#2bb24c', '#6fba82', '#9cdcb5', '#b8f0d0',
+        '#ffd54f', '#ffb300', '#ff8a65', '#d32f2f', '#81c784'
+      ].slice(0, conditionLabels.length);
+
+      new Chart(document.getElementById('conditionChart'), {
+        type: 'bar',
+        data: {
+          labels: conditionLabels,
+          datasets: [{
+            label: 'Patients',
+            data: conditionData,
+            backgroundColor: conditionColors,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#ffffff' } },
+            x: { ticks: { color: '#ffffff' } }
+          }
+        }
+      });
+
+      // -------- Chart 3: Doctors per Condition (Each Doctor = Different Color) --------
+      const doctorLabels = Object.keys(data.doctors);
+      const doctorData = Object.values(data.doctors);
+
+      const doctorColors = doctorLabels.map(() =>
+  `hsl(${Math.floor(Math.random() * 360)}, 70%, 45%)`);
+
+      new Chart(document.getElementById('doctorChart'), {
+        type: 'bar',
+        data: {
+          labels: doctorLabels,
+          datasets: [{
+            label: 'Appointments',
+            data: doctorData,
+            backgroundColor: doctorColors,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#ffffff' } },
+            x: { ticks: { color: '#ffffff' } }
+          }
+        }
+      });
+    });
+</script>
+</body>
+</html>

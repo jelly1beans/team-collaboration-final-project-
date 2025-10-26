@@ -317,7 +317,6 @@ form p a {
   margin-top: 10px;
   border-radius: 6px;
   cursor: pointer;
-  pointer-events: auto; /* ✅ Ensure it's clickable */
   transition: background-color 0.3s ease;
 }
 
@@ -329,4 +328,126 @@ form p a {
 section, div, nav, .content {
   position: relative;
   z-index: 1;
+}
+/* ===== Email Modal Design ===== */
+.modal-overlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-box {
+  background: #fff;
+  color: #222;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-box h2 {
+  margin-bottom: 10px;
+  color: #114d20;
+}
+
+.modal-box input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#emailCancel {
+  background: #ccc;
+  color: #333;
+}
+
+#emailCancel:hover {
+  background: #aaa;
+}
+
+#emailSubmit {
+  background: #114d20;
+  color: white;
+}
+
+#emailSubmit:hover {
+  background: #0e3f1b;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+/* ===== FLASH MESSAGES ===== */
+.flash-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: auto;
+  max-width: 90%;
+  padding: 10px;
+}
+
+.flash-message {
+  background-color: #18ab3f;
+  color: white;
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ✅ Green for success */
+.flash-message.success {
+  background-color: #2e7d32;
+  border-left: 5px solid #1b5e20;
+}
+
+/* ❌ Red for error */
+.flash-message.error {
+  background-color: #d32f2f;
+  border-left: 5px solid #b71c1c;
 }
